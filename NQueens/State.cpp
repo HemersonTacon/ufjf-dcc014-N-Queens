@@ -36,14 +36,14 @@ void State::makeChildren()
 
 }
 
-State* State::makeChild(int pos, int r)
+State* State::makeChild(int line, int r)
 {
     State* child = new State(n);
 
     for (int i = 0; i < n; ++i)
-        child->table[i] = table[i];
+        child->setQueen(i, table[i]);
 
-    child->table[pos] = (child->table[pos] + r) % n;
+    child->setQueen(line, (child->getQueenAt(line) + r) % n);
     child->printTable();
 
     return child;
@@ -51,10 +51,20 @@ State* State::makeChild(int pos, int r)
 
 void State::printTable()
 {
-    for(int i = 0; i < n; i++)
-        std::cout<<this->table[i]<<" ";
+    for(int i = 0; i < n; ++i)
+        std::cout<< table[i] << " ";
 
-    std::cout<<std::endl;
+    std::cout << std::endl;
+}
+
+void State::setQueen(int line, int column)
+{
+    table[line] = column;
+}
+
+int State::getQueenAt(int line)
+{
+    return table[line];
 }
 
 State::~State()

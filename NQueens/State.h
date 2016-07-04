@@ -10,15 +10,16 @@ class State
 
         int countConflicts();
         void makeChildren();
-        State* makeChild(int pos, int r);
+        State* makeChild(int line, int r);
         void printTable();
-
-        int *table;
+        void setQueen(int line, int column);
+        int getQueenAt(int line);
 
     protected:
 
     private:
         int n;
+        int *table;
         State **children;
 };
 

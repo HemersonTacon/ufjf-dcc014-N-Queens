@@ -7,10 +7,10 @@ void test()
 {
     State* s = new State(4);
 
-    s->table[0] = 0;
-    s->table[1] = 1;
-    s->table[2] = 2;
-    s->table[3] = 3;
+    s->setQueen(0, 0);
+    s->setQueen(1, 1);
+    s->setQueen(2, 2);
+    s->setQueen(3, 3);
 
     //cout << s->countConflicts() << endl;
 
