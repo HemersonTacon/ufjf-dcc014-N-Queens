@@ -17,3 +17,14 @@
 
 1467674179 /home/arthurlorenzi/ufjf-dcc014-N-Queens/NQueens/State.h
 
+1467751130 source:c:\users\principal\desktop\ufjf-dcc014-n-queens-master\nqueens\main.cpp
+	<iostream>
+	"State.h"
+
+1467751274 c:\users\principal\desktop\ufjf-dcc014-n-queens-master\nqueens\state.h
+
+1467751584 source:c:\users\principal\desktop\ufjf-dcc014-n-queens-master\nqueens\state.cpp
+	<stdlib.h>
+	"State.h"
+	<iostream>
+

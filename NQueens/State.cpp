@@ -6,7 +6,9 @@ State::State(int n)
 {
     this->n = n;
     table = new int[n];
-
+    children = NULL;
+    parent = NULL;
+    child_count = 0;
     for (int i = 0; i < n; ++i) table[i] = -1;
 }
 
@@ -22,24 +24,26 @@ int State::countConflicts()
     return count;
 }
 
-void State::makeChildren()
+void State::makeChildren(int moves)
 {
-    int childrenCount = n * (n-1), x;
+    moves = moves % n;
+    int childrenCount = n * moves, x;
 
     x = 0;
 
     children = new State*[childrenCount];
 
     for (int i = 0; i < n; ++i)
-        for (int j = 1; j < n; ++j)
+        for (int j = 1; j <= moves; ++j)
             children[x++] = makeChild(i, j);
 
+    this->child_count = x;
 }
 
 State* State::makeChild(int line, int r)
 {
     State* child = new State(n);
-
+    child->setParent(this);
     for (int i = 0; i < n; ++i)
         child->setQueen(i, table[i]);
 
@@ -47,6 +51,11 @@ State* State::makeChild(int line, int r)
     child->printTable();
 
     return child;
+}
+
+void State::setParent(State* parent)
+{
+    this->parent = parent;
 }
 
 void State::printTable()
@@ -66,8 +75,25 @@ int State::getQueenAt(int line)
 {
     return table[line];
 }
+State* State::getParent()
+{
+    return this->parent;
+}
 
 State::~State()
 {
-    //dtor
+    if(children != NULL){
+        for(int i = 0; i < child_count; i++)
+            delete children[i];
+
+
+        delete []children;
+    }
+    delete []table;
+
+    //delete children;
+}
+bool State::hasCycle()
+{
+
 }

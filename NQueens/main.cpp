@@ -14,7 +14,8 @@ void test()
 
     //cout << s->countConflicts() << endl;
 
-    s->makeChildren();
+    s->makeChildren(3);
+    delete s;
 }
 
 int main()

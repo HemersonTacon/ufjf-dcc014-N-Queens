@@ -9,18 +9,24 @@ class State
         virtual ~State();
 
         int countConflicts();
-        void makeChildren();
+        bool hasCycle();
+        void makeChildren(int moves);
         State* makeChild(int line, int r);
         void printTable();
         void setQueen(int line, int column);
         int getQueenAt(int line);
+        State* getParent();
+        void setParent(State *parent);
 
     protected:
 
     private:
         int n;
+        int child_count;
         int *table;
         State **children;
+        State *parent;
+        bool isEqual(State *parent);
 };
 
 #endif // STATE_H
