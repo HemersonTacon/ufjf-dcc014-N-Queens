@@ -5,10 +5,12 @@
 State::State(int n)
 {
     this->n = n;
+    last_visited = -1;
     table = new int[n];
     children = NULL;
     parent = NULL;
     child_count = 0;
+    size_children = 0;
     for (int i = 0; i < n; ++i) table[i] = -1;
 }
 
@@ -28,6 +30,7 @@ void State::makeChildren(int moves)
 {
     moves = moves % n;
     int childrenCount = n * moves, x;
+    this->size_children = childrenCount;
 
     x = 0;
 
@@ -49,13 +52,12 @@ State* State::makeChild(int line, int r)
 
     child->setQueen(line, (child->getQueenAt(line) + r) % n);
     if(child->hasCycle()){
-        std::cout<<"biiirl ciclo"<<std::endl;
         delete child;
         child = NULL;
         this->child_count--;
         return child;
     }
-    child->printTable();
+    //child->printTable();
 
     return child;
 }
@@ -124,4 +126,22 @@ bool State::isEqual(State* parent)
 int* State::getTable()
 {
     return this->table;
+}
+
+void State::setVisited(int val)
+{
+    this->last_visited = val;
+}
+
+int State::getVisited()
+{
+    return this->last_visited;
+}
+State* State::getChild(int i)
+{
+    return this->children[i];
+}
+int State::getSizeChildren()
+{
+    return this->size_children;
 }

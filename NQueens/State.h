@@ -11,23 +11,28 @@ class State
         int countConflicts();
         bool hasCycle();
         void makeChildren(int moves);
-        State* makeChild(int line, int r);
         void printTable();
         void setQueen(int line, int column);
         int getQueenAt(int line);
         State* getParent();
         void setParent(State *parent);
         int* getTable();
+        void setVisited(int val);
+        int getVisited();
+        int getSizeChildren();
+        State* getChild(int i);
 
     protected:
 
     private:
-        int n;
+        int n, size_children;
+        int last_visited;
         int child_count;
         int *table;
         State **children;
         State *parent;
         bool isEqual(State *parent);
+        State* makeChild(int line, int r);
 };
 
 #endif // STATE_H
