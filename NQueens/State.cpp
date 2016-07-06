@@ -48,6 +48,13 @@ State* State::makeChild(int line, int r)
         child->setQueen(i, table[i]);
 
     child->setQueen(line, (child->getQueenAt(line) + r) % n);
+    if(child->hasCycle()){
+        std::cout<<"biiirl ciclo"<<std::endl;
+        delete child;
+        child = NULL;
+        this->child_count--;
+        return child;
+    }
     child->printTable();
 
     return child;
@@ -95,5 +102,26 @@ State::~State()
 }
 bool State::hasCycle()
 {
-
+    State *p = NULL;
+    p = this->parent;
+    if(isEqual(p)) return true;
+    while(p->getParent() != NULL){
+        if(isEqual(p))
+            return true;
+        p = p->getParent();
+    }
+    return false;
+}
+bool State::isEqual(State* parent)
+{
+    int *parent_table = parent->getTable();
+    for(int  i = 0; i < n; i++){
+        if(this->table[i] != parent_table[i])
+            return false;
+    }
+    return true;
+}
+int* State::getTable()
+{
+    return this->table;
 }

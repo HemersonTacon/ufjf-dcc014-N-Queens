@@ -17,6 +17,7 @@ class State
         int getQueenAt(int line);
         State* getParent();
         void setParent(State *parent);
+        int* getTable();
 
     protected:
 
