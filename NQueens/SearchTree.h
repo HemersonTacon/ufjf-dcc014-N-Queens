@@ -9,6 +9,7 @@ class SearchTree
         SearchTree(State* root);
         virtual ~SearchTree();
         State* backTrackingInternal(State* root);
+
         std::vector<State*> backTracking();
         std::vector<State*> getPathTo(State* solution);
 

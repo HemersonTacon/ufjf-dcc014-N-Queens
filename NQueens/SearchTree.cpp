@@ -11,7 +11,7 @@ SearchTree::~SearchTree()
 std::vector<State*> SearchTree::getPathTo(State* solution)
 {
     State *current = NULL;
-    current = solution->getParent();
+    current = solution;
     std::vector<State*> path;
     while(current->getParent() != NULL){
         path.insert(path.begin(), current);
@@ -25,7 +25,6 @@ State* SearchTree::backTrackingInternal(State* root)
 {
     State* current = root;
     if(current->countConflicts() == 0){
-        current->printTable();
         return current;
     }
 

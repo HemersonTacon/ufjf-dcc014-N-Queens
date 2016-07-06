@@ -28,14 +28,14 @@
 	"State.h"
 	<iostream>
 
-1467845744 source:/home/user/Desktop/NQueens/NQueens/main.cpp
+1467847371 source:/home/user/Desktop/NQueens/NQueens/main.cpp
 	<iostream>
 	"State.h"
 	"SearchTree.h"
 
 1467838720 /home/user/Desktop/NQueens/NQueens/State.h
 
-1467845810 source:/home/user/Desktop/NQueens/NQueens/SearchTree.cpp
+1467846111 source:/home/user/Desktop/NQueens/NQueens/SearchTree.cpp
 	"SearchTree.h"
 
 1467844190 source:/home/user/Desktop/NQueens/NQueens/State.cpp

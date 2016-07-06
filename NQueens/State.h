@@ -21,6 +21,7 @@ class State
         int getVisited();
         int getSizeChildren();
         State* getChild(int i);
+        State* makeChild(int line, int r);
 
     protected:
 
@@ -32,7 +33,7 @@ class State
         State **children;
         State *parent;
         bool isEqual(State *parent);
-        State* makeChild(int line, int r);
+
 };
 
 #endif // STATE_H
