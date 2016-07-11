@@ -8,10 +8,13 @@ class SearchTree
     public:
         SearchTree(State* root);
         virtual ~SearchTree();
-        State* backTrackingInternal(State* root);
-
-        std::vector<State*> backTracking();
+        State* backTrackingInternal(State* root, int moves, int n);
+        State* depthFirstSearch(State* root, int n, int moves);
+        State* breadthFirstSearch(State* root, int n, int moves);
+        std::vector<State*> Search(int n, int moves, int opc);
         std::vector<State*> getPathTo(State* solution);
+        std::vector<State*> dps(int n, int moves);
+
 
     protected:
     private:

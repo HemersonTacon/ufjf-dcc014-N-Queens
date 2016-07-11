@@ -145,3 +145,13 @@ int State::getSizeChildren()
 {
     return this->size_children;
 }
+
+void State::setChild(int pos, State* child)
+{
+    this->children[pos] = child;
+}
+
+void State::setChildren(State** children)
+{
+    this->children = children;
+}
