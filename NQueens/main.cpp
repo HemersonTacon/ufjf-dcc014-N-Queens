@@ -1,6 +1,8 @@
 #include <iostream>
 #include "State.h"
+#include <time.h>
 #include "SearchTree.h"
+#include <stdlib.h>
 using namespace std;
 void printPath(std::vector<State*> path){
     for(auto it = path.begin(); it != path.end(); ++it)
@@ -8,14 +10,17 @@ void printPath(std::vector<State*> path){
 }
 void test()
 {
-    int opc;
-    State* s = new State(4);
-    SearchTree *tree = new SearchTree(s);
+    srand(time(NULL));
     std::vector<State*> path;
-    s->setQueen(0, 0);
-    s->setQueen(1, 0);
-    s->setQueen(2, 0);
-    s->setQueen(3, 0);
+    int opc, n;
+    std::cout<<"Entre com N:"<<std::endl;
+    cin>>n;
+    State* s = new State(n);
+    SearchTree *tree = new SearchTree(s);
+    for(int i = 0; i < n; i++){
+        s->setQueen(i, rand()%n);
+    }
+
     std::cout<<"Digite 0 para sair"<<std::endl;
     std::cout<<"Digite 1 para backtracking"<<std::endl;
     std::cout<<"Digite 2 para DPS"<<std::endl;
@@ -24,15 +29,15 @@ void test()
     while(opc != 0){
         switch(opc){
             case 1:
-              path = tree->Search(4, 1, opc);
+              path = tree->Search(n, 1, opc);
               printPath(path);
               break;
             case 2:
-              path = tree->Search(4, 1, opc);
+              path = tree->Search(n, 1, opc);
               printPath(path);
               break;
             case 3:
-              path = tree->Search(4, 1, opc);
+              path = tree->Search(n, 1, opc);
               printPath(path);
               break;
 
