@@ -22,8 +22,10 @@ class State
         int getSizeChildren();
         State* getChild(int i);
         State* makeChild(int line, int r);
+        State* makeChildAlternative(int i, int j);
         void setChild(int pos, State* child);
         void setChildren(State** children);
+        int getChildCountValids();
 
     protected:
 

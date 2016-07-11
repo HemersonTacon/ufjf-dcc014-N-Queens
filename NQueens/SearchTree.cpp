@@ -1,26 +1,32 @@
 #include "SearchTree.h"
 #include <stack>
 #include <queue>
-SearchTree::SearchTree(State* root)
+SearchTree::SearchTree(State* root, int n, int moves)
 {
     this->root = root;
+    this->n = n;
+    this->moves = moves;
 }
 
 SearchTree::~SearchTree()
 {
-
+    delete root;
 }
 std::vector<State*> SearchTree::getPathTo(State* solution)
 {
     State *current = NULL;
     current = solution;
     std::vector<State*> path;
-    while(current->getParent() != NULL){
+    if(solution != NULL){
+
+        while(current->getParent() != NULL){
+            path.insert(path.begin(), current);
+            current = current->getParent();
+        }
+
         path.insert(path.begin(), current);
-        current = current->getParent();
+        return path;
     }
-    path.insert(path.begin(), current);
-    return path;
 }
 
 State* SearchTree::backTrackingInternal(State* root, int moves, int n)
@@ -38,7 +44,7 @@ State* SearchTree::backTrackingInternal(State* root, int moves, int n)
     State* child = NULL;
     for (int i = 0; i < n; ++i){
         for (int j = 1; j <= moves; ++j){
-            child = current->makeChild(i,j);
+            child = current->makeChildAlternative(i,j);
             if(child != NULL){
                 current->setChild(x++, child);
                 current = backTrackingInternal(child, moves, n);
@@ -54,7 +60,7 @@ State* SearchTree::backTrackingInternal(State* root, int moves, int n)
 }
 
 
-std::vector<State*> SearchTree::Search(int n, int moves, int opc)
+std::vector<State*> SearchTree::Search(int opc)
 {   switch(opc){
         case 1:
             return getPathTo(backTrackingInternal(root,  moves ,n));
@@ -63,32 +69,34 @@ std::vector<State*> SearchTree::Search(int n, int moves, int opc)
              return getPathTo(depthFirstSearch(root,  n ,moves));
              break;
         case 3:
-             return getPathTo(breadthFirstSearch(root,  n ,moves));
-             break;
+            State* solutinon = breadthFirstSearch(root, n , moves);
+            solutinon->printTable();
+            return getPathTo(solutinon);
+            break;
     }
 
 }
-std::vector<State*> SearchTree::dps(int n, int moves)
-{
-    return getPathTo(depthFirstSearch(root, n, moves));
-}
+
 
 State* SearchTree::depthFirstSearch(State* root, int n, int moves){
     std::stack<State*> s;
     State* current = root;
     if(current == NULL)
         return NULL;
-
+    s.push(root);
     while(current->countConflicts() != 0){
         current->makeChildren(moves);
-        for(int i = n*moves -1 ; i >= 0; --i){
+        s.pop();
+        for(int i = 0; i < n*moves; ++i){
             if(current->getChild(i) != NULL)
                 s.push(current->getChild(i));
         }
+
         current = s.top();
-        s.pop();
-        if(s.size() == 0) return nullptr;
+
+        if(s.empty()) return nullptr;
     }
+    current->printTable();
     return current;
 }
 State* SearchTree::breadthFirstSearch(State* root, int n, int moves)
@@ -97,17 +105,30 @@ State* SearchTree::breadthFirstSearch(State* root, int n, int moves)
     State* current = root;
     if(current == NULL)
         return NULL;
-
+    q.push(root);
     while(current->countConflicts() != 0){
         current->makeChildren(moves);
+        q.pop();
         for(int i = 0; i < n*moves; ++i){
             if(current->getChild(i) != NULL)
                 q.push(current->getChild(i));
 
         }
+
+
         current = q.front();
-        q.pop();
-        if(q.size() == 0) return nullptr;
+        current->printTable();
+        if(q.empty()) return nullptr;
     }
     return current;
+}
+void SearchTree::freeSearchTree(State* root)
+{
+   /* if(root->getChildCountValids() == 0)
+        delete root;
+
+    for(int i = 0; i < n*moves; ++i){
+            if(root->getChildCountValids() > 0)
+                freeSearchTree(root->getChild(i));
+    }*/
 }

@@ -33,14 +33,20 @@ void State::makeChildren(int moves)
     this->size_children = childrenCount;
 
     x = 0;
+    childrenCount = this->size_children;
 
     children = new State*[childrenCount];
 
     for (int i = 0; i < n; ++i)
-        for (int j = 1; j <= moves; ++j)
-            children[x++] = makeChild(i, j);
+        for (int j = 0; j < n; ++j){
+            if(i != j)
+                //children[x++] = makeChild(i, j);
+                children[++x] = makeChildAlternative(i,j);
+        }
 
-    this->child_count = x;
+
+
+    //this->child_count = x;
 }
 
 State* State::makeChild(int line, int r)
@@ -54,10 +60,30 @@ State* State::makeChild(int line, int r)
     if(child->hasCycle()){
         delete child;
         child = NULL;
-        this->child_count--;
+        this->child_count = this->child_count - 1;
         return child;
     }
     //child->printTable();
+
+    return child;
+}
+State* State::makeChildAlternative(int i, int j)
+{
+    State* child = new State(n);
+    child->setParent(this);
+    for (int x = 0; x < n; ++x)
+        child->setQueen(x, table[x]);
+
+    if(i != j){
+        child->setQueen(i,  table[j]);
+        child->setQueen(j, table[i]);
+    }
+    if(child->hasCycle()){
+        delete child;
+        child = NULL;
+        this->child_count = this->child_count - 1;
+        return child;
+    }
 
     return child;
 }
@@ -92,8 +118,10 @@ State* State::getParent()
 State::~State()
 {
     if(children != NULL){
-        for(int i = 0; i < child_count; i++)
-            delete children[i];
+        for(int i = 0; i < n*n ; i++){
+            if( children[i] != NULL)
+                delete children[i];
+        }
 
 
         delete []children;
@@ -154,4 +182,8 @@ void State::setChild(int pos, State* child)
 void State::setChildren(State** children)
 {
     this->children = children;
+}
+int State::getChildCountValids()
+{
+    return this->child_count;
 }

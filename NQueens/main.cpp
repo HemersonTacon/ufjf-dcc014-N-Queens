@@ -4,6 +4,16 @@
 #include "SearchTree.h"
 #include <stdlib.h>
 using namespace std;
+bool contains(int sorteio, State* s, int n){
+    int* table = s->getTable();
+    for(int i = 0; i < n; i++){
+        if(sorteio == table[i])
+            return true;
+    }
+
+    return false;
+
+}
 void printPath(std::vector<State*> path){
     for(auto it = path.begin(); it != path.end(); ++it)
         (*it)->printTable();
@@ -15,11 +25,9 @@ void test()
     int opc, n;
     std::cout<<"Entre com N:"<<std::endl;
     cin>>n;
-    State* s = new State(n);
-    SearchTree *tree = new SearchTree(s);
-    for(int i = 0; i < n; i++){
-        s->setQueen(i, rand()%n);
-    }
+    State* s = NULL;
+    SearchTree *tree = NULL;
+
 
     std::cout<<"Digite 0 para sair"<<std::endl;
     std::cout<<"Digite 1 para backtracking"<<std::endl;
@@ -27,27 +35,44 @@ void test()
     std::cout<<"Digite 3 para largura"<<std::endl;
     cin>>opc;
     while(opc != 0){
+        s = new State(n);
+
+        int i = 0;
+        while(i < n){
+            s->setQueen(i,i);
+            ++i;
+        }
+
+
+        tree = new SearchTree(s, n, n-1);
+
         switch(opc){
             case 1:
-              path = tree->Search(n, 1, opc);
+              path = tree->Search(opc);
               printPath(path);
               break;
             case 2:
-              path = tree->Search(n, 1, opc);
+              path = tree->Search(opc);
               printPath(path);
               break;
             case 3:
-              path = tree->Search(n, 1, opc);
+              path = tree->Search(opc);
+              if(path.size() == 0){
+                std::cout<<"No solution"<<std::endl;
+                break;
+              }
               printPath(path);
               break;
 
         }
+        //delete tree;
+
         std::cout<<"Digite 0 para sair"<<std::endl;
         std::cout<<"Digite 1 para backtracking"<<std::endl;
         std::cout<<"Digite 2 para DPS"<<std::endl;
         std::cout<<"Digite 3 para largura"<<std::endl;
         cin>>opc;
-        system("clear");
+        //system("clear");
     }
 
 
@@ -55,7 +80,6 @@ void test()
     //cout << s->countConflicts() << endl;
 
 
-    delete s;
 }
 
 int main()
