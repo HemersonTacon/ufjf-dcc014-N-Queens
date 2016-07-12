@@ -1,6 +1,10 @@
 #include "SearchTree.h"
 #include <stack>
 #include <queue>
+#include <list>
+#include "Utils.h"
+#include <vector>
+#include <algorithm>
 SearchTree::SearchTree(int n, int moves)
 {
     this->n = n;
@@ -44,8 +48,8 @@ State* SearchTree::backTracking(State* root)
     current->setChildren(new State*[childrenCount]);
 
     State* child = NULL;
-    for (int i = 0; i < n; ++i){
-        for (int j = 1; j <= moves; ++j){
+    for (int i = 0; i < n-1 ; ++i){
+        for (int j = i + 1  ; j < n ; ++j){
             child = current->makeChildAlternative(i,j);
             if(child != NULL){
                 current->setChild(x++, child);
@@ -71,9 +75,22 @@ std::vector<State*> SearchTree::Search(int opc)
              return getPathTo(depthFirstSearch());
              break;
         case 3:
+        {
             State* solutinon = breadthFirstSearch();
             solutinon->printTable();
             return getPathTo(solutinon);
+            break;
+        }
+
+         case 4:
+            return getPathTo(orderSearch());
+            break;
+
+         case 5:
+            return getPathTo(greedy());
+            break;
+         case 6:
+            return getPathTo(AStar());
             break;
     }
 
@@ -89,16 +106,17 @@ State* SearchTree::depthFirstSearch(){
     while(current->countConflicts() != 0){
         current->makeChildren(moves);
         s.pop();
-        for(int i = 0; i < n*moves; ++i){
+
+        for(int i = 0; i < (n*(n-1))/2; ++i){
             if(current->getChild(i) != NULL)
                 s.push(current->getChild(i));
         }
-
+        if(s.empty()) return nullptr;
         current = s.top();
 
-        if(s.empty()) return nullptr;
+
     }
-    current->printTable();
+
     return current;
 }
 State* SearchTree::breadthFirstSearch()
@@ -111,19 +129,21 @@ State* SearchTree::breadthFirstSearch()
     while(current->countConflicts() != 0){
         current->makeChildren(moves);
         q.pop();
-        for(int i = 0; i < n*moves; ++i){
+        for(int i = 0; i < (n*(n-1))/2; ++i){
             if(current->getChild(i) != NULL)
                 q.push(current->getChild(i));
 
         }
 
+        if(q.empty()) return nullptr;
 
         current = q.front();
-        current->printTable();
-        if(q.empty()) return nullptr;
+
     }
+
     return current;
 }
+
 void SearchTree::freeSearchTree(State* root)
 {
    /* if(root->getChildCountValids() == 0)
@@ -133,4 +153,99 @@ void SearchTree::freeSearchTree(State* root)
             if(root->getChildCountValids() > 0)
                 freeSearchTree(root->getChild(i));
     }*/
+}
+State* SearchTree::orderSearch()
+{
+    std::vector<State*> l;
+    State* current = root;
+    if(current == NULL)
+        return NULL;
+    root->setCost(0);
+    l.push_back(root);
+    std::sort(l.begin(), l.end(), comparator);
+    current = *(l.begin());
+    while(current->countConflicts() != 0){
+        current->makeChildren(moves);
+        l.erase(l.begin());
+        for(int i = 0; i < (n*(n-1))/2; ++i){
+            if(current->getChild(i) != NULL){
+                current->getChild(i)->setCost(current->getChild(i)->getParent()->getCost() + 1);
+                l.push_back(current->getChild(i));
+            }
+
+        }
+
+        if(l.empty()) return nullptr;
+
+        std::sort(l.begin(), l.end(), comparator);
+        current = *(l.begin());
+
+    }
+
+    return current;
+}
+State* SearchTree::greedy()
+{
+    std::vector<State*> l;
+    State* current = root;
+    if(current == NULL)
+        return NULL;
+    root->setHeuristic(root->countConflicts());
+    l.push_back(root);
+    std::sort(l.begin(), l.end(), comparator2);
+    current = *(l.begin());
+    while(current->countConflicts() != 0){
+        current->makeChildren(moves);
+        l.erase(l.begin());
+        for(int i = 0; i < (n*(n-1))/2; ++i){
+            if(current->getChild(i) != NULL){
+                current->getChild(i)->setHeuristic(current->getChild(i)->countConflicts());
+                l.push_back(current->getChild(i));
+            }
+
+        }
+
+        if(l.empty()) return nullptr;
+
+        std::sort(l.begin(), l.end(), comparator2);
+        current = *(l.begin());
+
+    }
+
+    return current;
+}
+
+State* SearchTree::AStar()
+{
+    std::vector<State*> l;
+    State* current = root;
+    if(current == NULL)
+        return NULL;
+    root->setCost(0);
+    root->setHeuristic(root->countConflicts());
+    root->setF(root->getCost() + root->countConflicts());
+    l.push_back(root);
+    std::sort(l.begin(), l.end(), comparator3);
+    current = *(l.begin());
+    while(current->countConflicts() != 0){
+        current->makeChildren(moves);
+        l.erase(l.begin());
+        for(int i = 0; i < (n*(n-1))/2; ++i){
+            if(current->getChild(i) != NULL){
+                 current->getChild(i)->setCost(current->getChild(i)->getParent()->getCost() + 1);
+                 current->getChild(i)->setHeuristic(current->countConflicts());
+                 current->getChild(i)->setF(current->getChild(i)->countConflicts() + current->getChild(i)->getHeuristic());
+                l.push_back(current->getChild(i));
+            }
+
+        }
+
+        if(l.empty()) return nullptr;
+
+        std::sort(l.begin(), l.end(), comparator3);
+        current = *(l.begin());
+
+    }
+
+    return current;
 }

@@ -65,3 +65,33 @@
 	<stack>
 	<queue>
 
+1468333212 source:c:\users\principal\documents\github\ufjf-dcc014-n-queens\nqueens\main.cpp
+	<iostream>
+	"State.h"
+	<time.h>
+	"SearchTree.h"
+	<stdlib.h>
+
+1468332964 c:\users\principal\documents\github\ufjf-dcc014-n-queens\nqueens\state.h
+
+1468332806 c:\users\principal\documents\github\ufjf-dcc014-n-queens\nqueens\searchtree.h
+	"State.h"
+	<stdlib.h>
+	<vector>
+
+1468333255 source:c:\users\principal\documents\github\ufjf-dcc014-n-queens\nqueens\searchtree.cpp
+	"SearchTree.h"
+	<stack>
+	<queue>
+	<list>
+	"Utils.h"
+	<vector>
+	<algorithm>
+
+1468332986 source:c:\users\principal\documents\github\ufjf-dcc014-n-queens\nqueens\state.cpp
+	<stdlib.h>
+	"State.h"
+	<iostream>
+
+1468333158 c:\users\principal\documents\github\ufjf-dcc014-n-queens\nqueens\utils.h
+

@@ -14,7 +14,9 @@ class SearchTree
         State* breadthFirstSearch();
         std::vector<State*> Search(int opc);
         std::vector<State*> getPathTo(State* solution);
-
+        State* orderSearch();
+        State *greedy();
+        State *AStar();
     private:
         State* root;
         void freeSearchTree(State* root);

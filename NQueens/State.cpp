@@ -9,8 +9,10 @@ State::State(int n)
     table = new int[n];
     children = NULL;
     parent = NULL;
+    f = 0;
     child_count = 0;
     size_children = 0;
+    cost = 0;
     for (int i = 0; i < n; ++i) table[i] = -1;
 }
 
@@ -29,17 +31,16 @@ int State::countConflicts()
 void State::makeChildren(int moves)
 {
     moves = moves % n;
-    int childrenCount = n * moves, x;
+    int childrenCount = ((n)*(n - 1))/2;
     this->size_children = childrenCount;
 
-    x = 0;
+    int x = 0;
     childrenCount = this->size_children;
 
     children = new State*[childrenCount];
 
-    for (int i = 0; i < n; ++i)
-        for (int j = 0; j < n; ++j){
-            if(i != j)
+    for (int i = 0; i < n-1; ++i)
+        for (int j = i + 1; j < n ; ++j){
                 //children[x++] = makeChild(i, j);
                 children[x++] = makeChildAlternative(i,j);
         }
@@ -118,8 +119,8 @@ State* State::getParent()
 State::~State()
 {
     if(children != NULL){
-        for(int i = 0; i < n*n ; i++){
-            if( children[i] != NULL)
+        for(int i = 0; i < (n*(n-1))/2; i++){
+            if(children[i] != NULL)
                 delete children[i];
         }
 
@@ -186,4 +187,31 @@ void State::setChildren(State** children)
 int State::getChildCountValids()
 {
     return this->child_count;
+}
+void State::setCost(int cost)
+{
+    this->cost  =  cost;
+}
+
+int State::getCost()
+{
+    return this->cost;
+}
+void State::setHeuristic(int h)
+{
+    this->heuristic = h;
+}
+
+int State::getHeuristic()
+{
+    return this->heuristic;
+}
+void State::setF(int f)
+{
+    this->f = f;
+}
+
+int State::getF()
+{
+    return this->f;
 }
