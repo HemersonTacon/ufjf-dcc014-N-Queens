@@ -1,11 +1,13 @@
 #include "SearchTree.h"
 #include <stack>
 #include <queue>
-SearchTree::SearchTree(State* root, int n, int moves)
+SearchTree::SearchTree(int n, int moves)
 {
-    this->root = root;
     this->n = n;
     this->moves = moves;
+    this->root = new State(n);
+
+    for (int i = 0; i < n; ++i) root->setQueen(i, i);
 }
 
 SearchTree::~SearchTree()
@@ -29,7 +31,7 @@ std::vector<State*> SearchTree::getPathTo(State* solution)
     }
 }
 
-State* SearchTree::backTrackingInternal(State* root, int moves, int n)
+State* SearchTree::backTracking(State* root)
 {
     int childrenCount = n * moves;
     moves = moves % n;
@@ -47,7 +49,7 @@ State* SearchTree::backTrackingInternal(State* root, int moves, int n)
             child = current->makeChildAlternative(i,j);
             if(child != NULL){
                 current->setChild(x++, child);
-                current = backTrackingInternal(child, moves, n);
+                current = backTracking(child);
                 if(current != NULL)
                     return current;
             }else{
@@ -59,17 +61,17 @@ State* SearchTree::backTrackingInternal(State* root, int moves, int n)
 
 }
 
-
 std::vector<State*> SearchTree::Search(int opc)
-{   switch(opc){
+{
+    switch(opc){
         case 1:
-            return getPathTo(backTrackingInternal(root,  moves ,n));
+            return getPathTo(backTracking(root));
             break;
         case 2:
-             return getPathTo(depthFirstSearch(root,  n ,moves));
+             return getPathTo(depthFirstSearch());
              break;
         case 3:
-            State* solutinon = breadthFirstSearch(root, n , moves);
+            State* solutinon = breadthFirstSearch();
             solutinon->printTable();
             return getPathTo(solutinon);
             break;
@@ -78,7 +80,7 @@ std::vector<State*> SearchTree::Search(int opc)
 }
 
 
-State* SearchTree::depthFirstSearch(State* root, int n, int moves){
+State* SearchTree::depthFirstSearch(){
     std::stack<State*> s;
     State* current = root;
     if(current == NULL)
@@ -99,7 +101,7 @@ State* SearchTree::depthFirstSearch(State* root, int n, int moves){
     current->printTable();
     return current;
 }
-State* SearchTree::breadthFirstSearch(State* root, int n, int moves)
+State* SearchTree::breadthFirstSearch()
 {
     std::queue<State*> q;
     State* current = root;

@@ -25,7 +25,6 @@ void test()
     int opc, n;
     std::cout<<"Entre com N:"<<std::endl;
     cin>>n;
-    State* s = NULL;
     SearchTree *tree = NULL;
 
 
@@ -35,16 +34,8 @@ void test()
     std::cout<<"Digite 3 para largura"<<std::endl;
     cin>>opc;
     while(opc != 0){
-        s = new State(n);
 
-        int i = 0;
-        while(i < n){
-            s->setQueen(i,i);
-            ++i;
-        }
-
-
-        tree = new SearchTree(s, n, n-1);
+        tree = new SearchTree(n, n-1);
 
         switch(opc){
             case 1:
@@ -74,12 +65,6 @@ void test()
         cin>>opc;
         //system("clear");
     }
-
-
-
-    //cout << s->countConflicts() << endl;
-
-
 }
 
 int main()

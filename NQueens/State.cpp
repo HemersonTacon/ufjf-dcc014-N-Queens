@@ -41,7 +41,7 @@ void State::makeChildren(int moves)
         for (int j = 0; j < n; ++j){
             if(i != j)
                 //children[x++] = makeChild(i, j);
-                children[++x] = makeChildAlternative(i,j);
+                children[x++] = makeChildAlternative(i,j);
         }
 
 
