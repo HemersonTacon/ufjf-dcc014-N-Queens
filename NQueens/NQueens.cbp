@@ -39,6 +39,7 @@
 		<Unit filename="SearchTree.h" />
 		<Unit filename="State.cpp" />
 		<Unit filename="State.h" />
+		<Unit filename="Utils.h" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />

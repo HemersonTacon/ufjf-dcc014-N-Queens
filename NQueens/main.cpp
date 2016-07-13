@@ -85,7 +85,7 @@ void test()
               break;
 
         }
-        //delete tree;
+        delete tree;
 
         std::cout<<"Digite 0 para sair"<<std::endl;
         std::cout<<"Digite 1 para backtracking"<<std::endl;

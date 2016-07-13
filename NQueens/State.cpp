@@ -38,6 +38,8 @@ void State::makeChildren(int moves)
     childrenCount = this->size_children;
 
     children = new State*[childrenCount];
+    for(int i = 0 ; i < childrenCount; ++i)
+        children[i] = NULL;
 
     for (int i = 0; i < n-1; ++i)
         for (int j = i + 1; j < n ; ++j){
@@ -118,15 +120,16 @@ State* State::getParent()
 
 State::~State()
 {
-    if(children != NULL){
+    if(this->child_count != 0){
         for(int i = 0; i < (n*(n-1))/2; i++){
             if(children[i] != NULL)
                 delete children[i];
         }
 
 
-        delete []children;
+
     }
+    delete []children;
     delete []table;
 
     //delete children;
