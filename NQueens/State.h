@@ -32,13 +32,21 @@ class State
         int getHeuristic();
         void setF(int f);
         int getF();
+        int getLast_i();
+        int getLast_j();
+        void setLast_i(int i);
+        void setLast_j(int j);
+        void upadateOp();
 
     protected:
 
     private:
         int n, size_children;
+        int last_i, last_j;
         int cost;
+        int round;
         int last_visited;
+        int x;
         int heuristic;
         int f;
         int child_count;

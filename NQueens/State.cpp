@@ -5,14 +5,19 @@
 State::State(int n)
 {
     this->n = n;
+    x = -1;
+    round = 1;
     last_visited = -1;
     table = new int[n];
     children = NULL;
     parent = NULL;
     f = 0;
+    last_i = 0;
+    last_j = 0;
     child_count = 0;
     size_children = 0;
     cost = 0;
+    children = new State*[(n*(n-1))/2];
     for (int i = 0; i < n; ++i) table[i] = -1;
 }
 
@@ -35,9 +40,9 @@ void State::makeChildren(int moves)
     this->size_children = childrenCount;
 
     int x = 0;
-    childrenCount = this->size_children;
+    child_count = this->size_children;
 
-    children = new State*[childrenCount];
+    //children = new State*[childrenCount];
     for(int i = 0 ; i < childrenCount; ++i)
         children[i] = NULL;
 
@@ -46,6 +51,8 @@ void State::makeChildren(int moves)
                 //children[x++] = makeChild(i, j);
                 children[x++] = makeChildAlternative(i,j);
         }
+    //if(child_count == 0) delete []children;
+    std::cout<<"child count : " <<child_count<<std::endl;
 
 
 
@@ -120,7 +127,9 @@ State* State::getParent()
 
 State::~State()
 {
-    if(this->child_count != 0){
+   //std::cout<<"child count : " <<child_count<<std::endl;
+
+    if(this->child_count > 0){
         for(int i = 0; i < (n*(n-1))/2; i++){
             if(children[i] != NULL)
                 delete children[i];
@@ -217,4 +226,39 @@ void State::setF(int f)
 int State::getF()
 {
     return this->f;
+}
+int State::getLast_i()
+{
+    return this->last_i;
+}
+
+int State::getLast_j()
+{
+    return this->last_j;
+}
+
+void State::setLast_i(int i)
+{
+    this->last_i = i;
+}
+
+void State::setLast_j(int j)
+{
+    this->last_j = j;
+}
+void State::upadateOp()
+{
+
+    last_i = x / n;
+    if(x%n <= last_i){
+        while( (x % n) <= last_i){
+            x = x + 1;
+            //std::cout<<x%n<<std::endl;
+        }
+    }else{
+        x = x + 1;
+    }
+    last_j = x % n;
+
+
 }

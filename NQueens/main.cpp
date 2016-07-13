@@ -30,11 +30,12 @@ void test()
 
     std::cout<<"Digite 0 para sair"<<std::endl;
     std::cout<<"Digite 1 para backtracking"<<std::endl;
-    std::cout<<"Digite 2 para DPS"<<std::endl;
+    std::cout<<"Digite 2 para DFS"<<std::endl;
     std::cout<<"Digite 3 para largura"<<std::endl;
     std::cout<<"Digite 4 para ordenada"<<std::endl;
     std::cout<<"Digite 5 para gulosa"<<std::endl;
     std::cout<<"Digite 6 para A*"<<std::endl;
+    std::cout<<"Digite 7 para IDA*"<<std::endl;
     cin>>opc;
     while(opc != 0){
 
@@ -84,6 +85,17 @@ void test()
               printPath(path);
               break;
 
+              case 7:
+                path = tree->Search(opc);
+                if(path.size() == 0){
+                    std::cout<<"No solution"<<std::endl;
+                    break;
+                }
+                printPath(path);
+                break;
+
+
+
         }
         delete tree;
 
@@ -94,6 +106,7 @@ void test()
         std::cout<<"Digite 4 para ordenada"<<std::endl;
         std::cout<<"Digite 5 para gulosa"<<std::endl;
         std::cout<<"Digite 6 para A*"<<std::endl;
+        std::cout<<"Digite 7 para IDA*"<<std::endl;
         cin>>opc;
         //system("clear");
     }

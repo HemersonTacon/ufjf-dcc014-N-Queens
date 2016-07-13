@@ -1,0 +1,32 @@
+# depslib dependency file v1.0
+1468450077 source:c:\users\principal\documents\github\ufjf-dcc014-n-queens\nqueens\main.cpp
+	<iostream>
+	"State.h"
+	<time.h>
+	"SearchTree.h"
+	<stdlib.h>
+
+1468451297 c:\users\principal\documents\github\ufjf-dcc014-n-queens\nqueens\state.h
+
+1468441202 c:\users\principal\documents\github\ufjf-dcc014-n-queens\nqueens\searchtree.h
+	"State.h"
+	<stdlib.h>
+	<vector>
+
+1468445886 source:c:\users\principal\documents\github\ufjf-dcc014-n-queens\nqueens\searchtree.cpp
+	"SearchTree.h"
+	<stack>
+	<queue>
+	<list>
+	"Utils.h"
+	<vector>
+	<algorithm>
+	<iostream>
+
+1468444516 c:\users\principal\documents\github\ufjf-dcc014-n-queens\nqueens\utils.h
+
+1468451906 source:c:\users\principal\documents\github\ufjf-dcc014-n-queens\nqueens\state.cpp
+	<stdlib.h>
+	"State.h"
+	<iostream>
+

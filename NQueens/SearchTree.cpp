@@ -5,6 +5,7 @@
 #include "Utils.h"
 #include <vector>
 #include <algorithm>
+#include <iostream>
 SearchTree::SearchTree(int n, int moves)
 {
     this->n = n;
@@ -12,6 +13,10 @@ SearchTree::SearchTree(int n, int moves)
     this->root = new State(n);
 
     for (int i = 0; i < n; ++i) root->setQueen(i, i);
+    for(int i = 0; i < (n*(n-1))/2; i++){
+        root->upadateOp();
+        std::cout<<"i: "<<root->getLast_i()<<" Last_j: "<<root->getLast_j()<<std::endl;
+    }
 }
 
 SearchTree::~SearchTree()
@@ -45,7 +50,7 @@ State* SearchTree::backTracking(State* root)
     }
     int  x = 0;
 
-    current->setChildren(new State*[childrenCount]);
+    //current->setChildren(new State*[childrenCount]);
 
     State* child = NULL;
     for (int i = 0; i < n-1 ; ++i){
@@ -91,6 +96,9 @@ std::vector<State*> SearchTree::Search(int opc)
             break;
          case 6:
             return getPathTo(AStar());
+            break;
+        case 7:
+            return getPathTo(IDAStar());
             break;
     }
 
@@ -244,6 +252,52 @@ State* SearchTree::AStar()
 
         std::sort(l.begin(), l.end(), comparator3);
         current = *(l.begin());
+
+    }
+
+    return current;
+}
+State* SearchTree::IDAStar()
+{
+    std::list<State*> closed;
+    int patamar = 0, patamar_old = -1;
+    State* current = root;
+    current->setF(current->countConflicts());
+    patamar = current->getF();
+
+    while(current->countConflicts() > 0){
+        if(patamar == patamar_old)
+            return NULL;
+        else{
+            if(current->getF() > patamar){
+                closed.push_back(current);
+                current = current->getParent();
+            }
+            current->upadateOp();
+            if(current->getLast_i() < n - 1){
+                current = current->makeChildAlternative(current->getLast_i(), current->getLast_j()%n);
+                if(current != NULL){
+                    current->setCost(current->getCost() + 1);
+                    current->setF(current->getCost() + current->countConflicts());
+                }
+            }else{
+                if(current = root){
+                    patamar_old = patamar;
+                    patamar = findMin(closed);
+                    for(int i = 0; i < (n*(n-1))/2; ++i){
+                        if(current->getChild(i) != NULL)
+                            delete current->getChild(i);
+                    }
+
+                }else{
+                    current = current->getParent();
+                }
+            }
+
+
+
+
+        }
 
     }
 
