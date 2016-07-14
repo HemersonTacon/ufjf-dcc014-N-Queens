@@ -13,10 +13,10 @@ SearchTree::SearchTree(int n, int moves)
     this->root = new State(n);
 
     for (int i = 0; i < n; ++i) root->setQueen(i, i);
-    for(int i = 0; i < (n*(n-1))/2; i++){
-        root->upadateOp();
-        std::cout<<"i: "<<root->getLast_i()<<" Last_j: "<<root->getLast_j()<<std::endl;
-    }
+//    for(int i = 0; i < (n*(n-1))/2; i++){
+//        root->upadateOp();
+//        std::cout<<"i: "<<root->getLast_i()<<" Last_j: "<<root->getLast_j()%n<<std::endl;
+//    }
 }
 
 SearchTree::~SearchTree()
@@ -259,7 +259,7 @@ State* SearchTree::AStar()
 }
 State* SearchTree::IDAStar()
 {
-    std::list<State*> closed;
+    std::list<int> closed;
     int patamar = 0, patamar_old = -1;
     State* current = root;
     current->setF(current->countConflicts());
@@ -270,7 +270,7 @@ State* SearchTree::IDAStar()
             return NULL;
         else{
             if(current->getF() > patamar){
-                closed.push_back(current);
+                closed.push_back(current->getF());
                 current = current->getParent();
             }
             current->upadateOp();
@@ -281,22 +281,19 @@ State* SearchTree::IDAStar()
                     current->setF(current->getCost() + current->countConflicts());
                 }
             }else{
-                if(current = root){
+                if(current == root){
                     patamar_old = patamar;
                     patamar = findMin(closed);
                     for(int i = 0; i < (n*(n-1))/2; ++i){
                         if(current->getChild(i) != NULL)
                             delete current->getChild(i);
                     }
+                    current->set
 
                 }else{
                     current = current->getParent();
                 }
             }
-
-
-
-
         }
 
     }

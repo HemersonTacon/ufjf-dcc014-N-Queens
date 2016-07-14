@@ -249,16 +249,7 @@ void State::setLast_j(int j)
 void State::upadateOp()
 {
 
-    last_i = x / n;
-    if(x%n <= last_i){
-        while( (x % n) <= last_i){
-            x = x + 1;
-            //std::cout<<x%n<<std::endl;
-        }
-    }else{
-        x = x + 1;
-    }
-    last_j = x % n;
-
+    last_j = last_j + 1 + (((last_j + 1) % n)  == 0 ? ((last_j + 1) / n) + 1 : 0);
+    last_i = last_j / n;
 
 }

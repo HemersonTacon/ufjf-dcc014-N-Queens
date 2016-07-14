@@ -30,3 +30,34 @@
 	"State.h"
 	<iostream>
 
+1468438372 source:c:\users\hemerson\desktop\cc 7 periodo\dcc014 inteligência artificial\ufjf-dcc014-n-queens-master\nqueens\main.cpp
+	<iostream>
+	"State.h"
+	<time.h>
+	"SearchTree.h"
+	<stdlib.h>
+
+1468438372 c:\users\hemerson\desktop\cc 7 periodo\dcc014 inteligência artificial\ufjf-dcc014-n-queens-master\nqueens\state.h
+
+1468438372 c:\users\hemerson\desktop\cc 7 periodo\dcc014 inteligência artificial\ufjf-dcc014-n-queens-master\nqueens\searchtree.h
+	"State.h"
+	<stdlib.h>
+	<vector>
+
+1468457422 source:c:\users\hemerson\desktop\cc 7 periodo\dcc014 inteligência artificial\ufjf-dcc014-n-queens-master\nqueens\searchtree.cpp
+	"SearchTree.h"
+	<stack>
+	<queue>
+	<list>
+	"Utils.h"
+	<vector>
+	<algorithm>
+	<iostream>
+
+1468456944 c:\users\hemerson\desktop\cc 7 periodo\dcc014 inteligência artificial\ufjf-dcc014-n-queens-master\nqueens\utils.h
+
+1468455480 source:c:\users\hemerson\desktop\cc 7 periodo\dcc014 inteligência artificial\ufjf-dcc014-n-queens-master\nqueens\state.cpp
+	<stdlib.h>
+	"State.h"
+	<iostream>
+
