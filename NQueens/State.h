@@ -10,7 +10,7 @@ class State
 
         int countConflicts();
         bool hasCycle();
-        void makeChildren();
+        int makeChildren();
         void printTable();
         void setQueen(int line, int column);
         int getQueenAt(int line);
@@ -21,8 +21,8 @@ class State
         int getVisited();
         int getSizeChildren();
         State* getChild(int i);
-        State* makeChild(int line, int r);
-        State* makeChildAlternative(int i, int j);
+        State* makeChildMove(int line, int steps);
+        State* makeChildPermutation(int i, int j);
         void setChild(int pos, State* child);
         void setChildren(State** children);
         int getChildCountValids();
@@ -39,8 +39,6 @@ class State
         void setLast_j(int j);
         void upadateOp();
         int getDepth();
-
-    protected:
 
     private:
         int n;

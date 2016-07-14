@@ -42,7 +42,7 @@ void test()
 
         tree = new SearchTree(n);
 
-        path = tree->Search(opc);
+        path = tree->doSearch(opc);
 
         if(path.size() == 0)
             std::cout<<"No solution"<<std::endl;

@@ -10,11 +10,11 @@ class SearchTree
         virtual ~SearchTree();
 
         void printStats();
+        std::vector<State*> doSearch(int opc);
+        std::vector<State*> getPathTo(State* solution);
         State* backTracking(State* root);
         State* depthFirstSearch();
         State* breadthFirstSearch();
-        std::vector<State*> Search(int opc);
-        std::vector<State*> getPathTo(State* solution);
         State* orderSearch();
         State* greedy();
         State* AStar();

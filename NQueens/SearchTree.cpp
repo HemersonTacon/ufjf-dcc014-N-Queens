@@ -43,33 +43,33 @@ std::vector<State*> SearchTree::getPathTo(State* solution)
 
 State* SearchTree::backTracking(State* root)
 {
-    State* current = root;
-    if(current->countConflicts() == 0){
-        return current;
-    }
-    int  x = 0;
+    ++visited;
 
-    //current->setChildren(new State*[childrenCount]);
+    if(root->countConflicts() == 0)
+        return root;
 
-    State* child = NULL;
-    for (int i = 0; i < n-1 ; ++i){
-        for (int j = i + 1  ; j < n ; ++j){
-            child = current->makeChildAlternative(i,j);
+    int x = 0;
+    State *current, *child;
+
+    for (int i = 0; i < n-1; ++i) {
+        for (int j = i + 1; j < n; ++j) {
+            child = root->makeChildPermutation(i,j);
             if(child != NULL){
-                current->setChild(x++, child);
+                ++expanded;
+                root->setChild(x, child);
                 current = backTracking(child);
+
                 if(current != NULL)
                     return current;
-            }else{
-                ++x;
             }
+            ++x;
         }
     }
-    return nullptr;
 
+    return nullptr;
 }
 
-std::vector<State*> SearchTree::Search(int opc)
+std::vector<State*> SearchTree::doSearch(int opc)
 {
     std::clock_t startCpuTime = std::clock();
 
@@ -103,7 +103,7 @@ std::vector<State*> SearchTree::Search(int opc)
 }
 
 State* SearchTree::depthFirstSearch(){
-    int visited, expanded;
+    int visited, expanded, childrenCount;
     std::stack<State*> s;
     State* current = root;
 
@@ -113,12 +113,11 @@ State* SearchTree::depthFirstSearch(){
     expanded = 0;
 
     while(current->countConflicts() != 0){
-        current->makeChildren();
-        expanded += current->getChildCountValids();
+        childrenCount = current->makeChildren();
+        expanded += childrenCount;
 
-        for(int i = 0; i < (n*(n-1))/2; ++i)
-            if(current->getChild(i) != NULL)
-                s.push(current->getChild(i));
+        for(int i = 0; i < childrenCount; ++i)
+            s.push(current->getChild(i));
 
         if(s.empty()) break;
 
@@ -134,7 +133,7 @@ State* SearchTree::depthFirstSearch(){
 
 State* SearchTree::breadthFirstSearch()
 {
-    int visited, expanded;
+    int visited, expanded, childrenCount;
     std::queue<State*> q;
     State* current = root;
 
@@ -144,17 +143,15 @@ State* SearchTree::breadthFirstSearch()
     expanded = 0;
 
     while(current->countConflicts() != 0){
-        current->makeChildren();
-        expanded += current->getChildCountValids();
-        q.pop();
-        for(int i = 0; i < (n*(n-1))/2; ++i){
-            if(current->getChild(i) != NULL)
-                q.push(current->getChild(i));
+        childrenCount = current->makeChildren();
+        expanded += childrenCount;
 
-        }
+        for(int i = 0; i < childrenCount; ++i)
+            q.push(current->getChild(i));
 
         if(q.empty()) break;
 
+        q.pop();
         current = q.front();
         ++visited;
     }
@@ -278,7 +275,7 @@ State* SearchTree::IDAStar()
             }
             current->upadateOp();
             if(current->getLast_i() < n - 1){
-                child = current->makeChildAlternative(current->getLast_i(), current->getLast_j()%n);
+                child = current->makeChildPermutation(current->getLast_i(), current->getLast_j()%n);
                 if(child != NULL){
                     current = child;
                     current->setCost(current->getCost() + 1);

@@ -31,62 +31,61 @@ int State::countConflicts()
     return count;
 }
 
-void State::makeChildren()
+int State::makeChildren()
 {
-    int childrenSize = (n*(n - 1))/2,
-        x = 0;
-
-    child_count = childrenSize;
-
-    //children = new State*[childrenCount];
-
-    for(int i = 0 ; i < childrenSize; ++i)
-        children[i] = NULL;
+    int x = 0, childrenSize = (n*(n - 1))/2;
+    State* newState;
 
     for (int i = 0; i < n-1; ++i)
         for (int j = i + 1; j < n ; ++j)
-            children[x++] = makeChildAlternative(i,j);
+        {
+            newState = makeChildPermutation(i,j);
 
-    //if(child_count == 0) delete []children;
-    //std::cout<<"child count : " <<child_count<<std::endl;
+            if (newState != NULL)
+            {
+                children[x++] = newState;
+                ++child_count;
+            }
+        }
 
+    for (int i = x; i < childrenSize; ++i)
+        children[i] = NULL;
 
-
-    //this->child_count = x;
+    return child_count;
 }
 
-State* State::makeChild(int line, int r)
+State* State::makeChildMove(int line, int steps)
 {
     State* child = new State(n, depth + 1);
-    child->setParent(this);
+
     for (int i = 0; i < n; ++i)
         child->setQueen(i, table[i]);
 
-    child->setQueen(line, (child->getQueenAt(line) + r) % n);
+    child->setQueen(line, (child->getQueenAt(line) + steps) % n);
+    child->setParent(this);
+
     if(child->hasCycle()){
         delete child;
         child = NULL;
-        this->child_count = this->child_count - 1;
     }
-    //child->printTable();
 
     return child;
 }
-State* State::makeChildAlternative(int i, int j)
+
+State* State::makeChildPermutation(int i, int j)
 {
     State* child = new State(n, depth + 1);
-    child->setParent(this);
+
     for (int x = 0; x < n; ++x)
         child->setQueen(x, table[x]);
 
-    if(i != j){
-        child->setQueen(i,  table[j]);
-        child->setQueen(j, table[i]);
-    }
+    child->setQueen(i, table[j]);
+    child->setQueen(j, table[i]);
+    child->setParent(this);
+
     if(child->hasCycle()){
         delete child;
         child = NULL;
-        this->child_count = this->child_count - 1;
     }
 
     return child;
@@ -121,8 +120,6 @@ State* State::getParent()
 
 State::~State()
 {
-   //std::cout<<"child count : " <<child_count<<std::endl;
-
     if(this->child_count > 0){
         for(int i = 0; i < (n*(n-1))/2; i++){
             if(children[i] != NULL)
