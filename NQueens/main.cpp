@@ -3,6 +3,7 @@
 #include <time.h>
 #include "SearchTree.h"
 #include <stdlib.h>
+#include <stack>
 using namespace std;
 bool contains(int sorteio, State* s, int n){
     int* table = s->getTable();
@@ -39,64 +40,17 @@ void test()
     cin>>opc;
     while(opc != 0){
 
-        tree = new SearchTree(n, n-1);
+        tree = new SearchTree(n);
 
-        switch(opc){
-            case 1:
-              path = tree->Search(opc);
-              printPath(path);
-              break;
-            case 2:
-              path = tree->Search(opc);
-              printPath(path);
-              break;
-            case 3:
-              path = tree->Search(opc);
-              if(path.size() == 0){
-                std::cout<<"No solution"<<std::endl;
-                break;
-              }
-              printPath(path);
-              break;
-            case 4:
-              path = tree->Search(opc);
-              if(path.size() == 0){
-                std::cout<<"No solution"<<std::endl;
-                break;
-              }
-              printPath(path);
-              break;
+        path = tree->Search(opc);
 
-            case 5:
-              path = tree->Search(opc);
-              if(path.size() == 0){
-                std::cout<<"No solution"<<std::endl;
-                break;
-              }
-              printPath(path);
-              break;
+        if(path.size() == 0)
+            std::cout<<"No solution"<<std::endl;
+        else
+            printPath(path);
 
-            case 6:
-              path = tree->Search(opc);
-              if(path.size() == 0){
-                std::cout<<"No solution"<<std::endl;
-                break;
-              }
-              printPath(path);
-              break;
+        tree->printStats();
 
-              case 7:
-                path = tree->Search(opc);
-                if(path.size() == 0){
-                    std::cout<<"No solution"<<std::endl;
-                    break;
-                }
-                printPath(path);
-                break;
-
-
-
-        }
         delete tree;
 
         std::cout<<"Digite 0 para sair"<<std::endl;
@@ -108,7 +62,6 @@ void test()
         std::cout<<"Digite 6 para A*"<<std::endl;
         std::cout<<"Digite 7 para IDA*"<<std::endl;
         cin>>opc;
-        //system("clear");
     }
 }
 

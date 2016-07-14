@@ -6,11 +6,15 @@
 #include <vector>
 #include <algorithm>
 #include <iostream>
-SearchTree::SearchTree(int n, int moves)
+#include <chrono>
+
+SearchTree::SearchTree(int n)
 {
     this->n = n;
-    this->moves = moves;
-    this->root = new State(n);
+    this->visited = 0;
+    this->expanded = 0;
+    this->cpuDuration = 0;
+    this->root = new State(n, 0);
 
     for (int i = 0; i < n; ++i) root->setQueen(i, i);
 //    for(int i = 0; i < (n*(n-1))/2; i++){
@@ -23,27 +27,22 @@ SearchTree::~SearchTree()
 {
     delete root;
 }
+
 std::vector<State*> SearchTree::getPathTo(State* solution)
 {
-    State *current = NULL;
-    current = solution;
+    State *current = solution;
     std::vector<State*> path;
-    if(solution != NULL){
 
-        while(current->getParent() != NULL){
-            path.insert(path.begin(), current);
-            current = current->getParent();
-        }
-
+    while(current != NULL){
         path.insert(path.begin(), current);
-        return path;
+        current = current->getParent();
     }
+
+    return path;
 }
 
 State* SearchTree::backTracking(State* root)
 {
-    int childrenCount = n * moves;
-    moves = moves % n;
     State* current = root;
     if(current->countConflicts() == 0){
         return current;
@@ -72,70 +71,81 @@ State* SearchTree::backTracking(State* root)
 
 std::vector<State*> SearchTree::Search(int opc)
 {
+    std::clock_t startCpuTime = std::clock();
+
     switch(opc){
         case 1:
-            return getPathTo(backTracking(root));
+            solution = backTracking(root);
             break;
         case 2:
-             return getPathTo(depthFirstSearch());
-             break;
+            solution = depthFirstSearch();
+            break;
         case 3:
-        {
-            State* solutinon = breadthFirstSearch();
-            solutinon->printTable();
-            return getPathTo(solutinon);
+            solution = breadthFirstSearch();
             break;
-        }
-
-         case 4:
-            return getPathTo(orderSearch());
+        case 4:
+            solution = orderSearch();
             break;
-
-         case 5:
-            return getPathTo(greedy());
+        case 5:
+            solution = greedy();
             break;
-         case 6:
-            return getPathTo(AStar());
+        case 6:
+            solution = AStar();
             break;
         case 7:
-            return getPathTo(IDAStar());
+            solution = IDAStar();
             break;
     }
 
-}
+    cpuDuration = (std::clock() - startCpuTime) / (double)CLOCKS_PER_SEC;
 
+    return getPathTo(solution);
+}
 
 State* SearchTree::depthFirstSearch(){
+    int visited, expanded;
     std::stack<State*> s;
     State* current = root;
-    if(current == NULL)
-        return NULL;
-    s.push(root);
-    while(current->countConflicts() != 0){
-        current->makeChildren(moves);
-        s.pop();
 
-        for(int i = 0; i < (n*(n-1))/2; ++i){
+    s.push(root);
+
+    visited = 1;
+    expanded = 0;
+
+    while(current->countConflicts() != 0){
+        current->makeChildren();
+        expanded += current->getChildCountValids();
+
+        for(int i = 0; i < (n*(n-1))/2; ++i)
             if(current->getChild(i) != NULL)
                 s.push(current->getChild(i));
-        }
-        if(s.empty()) return nullptr;
+
+        if(s.empty()) break;
+
+        s.pop();
         current = s.top();
-
-
+        ++visited;
     }
 
-    return current;
+    setSearchData(visited, expanded);
+
+    return (!s.empty()) ? current : NULL;
 }
+
 State* SearchTree::breadthFirstSearch()
 {
+    int visited, expanded;
     std::queue<State*> q;
     State* current = root;
-    if(current == NULL)
-        return NULL;
+
     q.push(root);
+
+    visited = 1;
+    expanded = 0;
+
     while(current->countConflicts() != 0){
-        current->makeChildren(moves);
+        current->makeChildren();
+        expanded += current->getChildCountValids();
         q.pop();
         for(int i = 0; i < (n*(n-1))/2; ++i){
             if(current->getChild(i) != NULL)
@@ -143,25 +153,17 @@ State* SearchTree::breadthFirstSearch()
 
         }
 
-        if(q.empty()) return nullptr;
+        if(q.empty()) break;
 
         current = q.front();
-
+        ++visited;
     }
 
-    return current;
+    setSearchData(visited, expanded);
+
+    return (!q.empty()) ? current : NULL;
 }
 
-void SearchTree::freeSearchTree(State* root)
-{
-   /* if(root->getChildCountValids() == 0)
-        delete root;
-
-    for(int i = 0; i < n*moves; ++i){
-            if(root->getChildCountValids() > 0)
-                freeSearchTree(root->getChild(i));
-    }*/
-}
 State* SearchTree::orderSearch()
 {
     std::vector<State*> l;
@@ -173,7 +175,7 @@ State* SearchTree::orderSearch()
     std::sort(l.begin(), l.end(), comparator);
     current = *(l.begin());
     while(current->countConflicts() != 0){
-        current->makeChildren(moves);
+        current->makeChildren();
         l.erase(l.begin());
         for(int i = 0; i < (n*(n-1))/2; ++i){
             if(current->getChild(i) != NULL){
@@ -203,7 +205,7 @@ State* SearchTree::greedy()
     std::sort(l.begin(), l.end(), comparator2);
     current = *(l.begin());
     while(current->countConflicts() != 0){
-        current->makeChildren(moves);
+        current->makeChildren();
         l.erase(l.begin());
         for(int i = 0; i < (n*(n-1))/2; ++i){
             if(current->getChild(i) != NULL){
@@ -236,7 +238,7 @@ State* SearchTree::AStar()
     std::sort(l.begin(), l.end(), comparator3);
     current = *(l.begin());
     while(current->countConflicts() != 0){
-        current->makeChildren(moves);
+        current->makeChildren();
         l.erase(l.begin());
         for(int i = 0; i < (n*(n-1))/2; ++i){
             if(current->getChild(i) != NULL){
@@ -301,4 +303,27 @@ State* SearchTree::IDAStar()
     }
 
     return current;
+}
+
+void SearchTree::setSearchData(int visited, int expanded)
+{
+    this->visited = visited;
+    this->expanded = expanded;
+}
+
+void SearchTree::printStats()
+{
+    if (visited == 0)
+    {
+        std::cout << "Call \"doSearch(int opt)\" to get stats." << std::endl;
+        return;
+    }
+
+    std::cout << "Executed search in " << cpuDuration << " seconds [CPU Clock]" << std::endl;
+    std::cout << "Statistics: " << std::endl;
+    std::cout << "Solution depth: " << solution->getDepth() << std::endl;
+    //std::cout << "Solution cost: " << cost << std::endl;
+    std::cout << "Expanded nodes: " << expanded << std::endl;
+    std::cout << "Visited nodes: " << visited << std::endl;
+    std::cout << "Average branching factor: " << (double) expanded/visited << std::endl;
 }

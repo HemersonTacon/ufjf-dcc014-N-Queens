@@ -6,9 +6,10 @@
 class SearchTree
 {
     public:
-        SearchTree(int n, int moves);
+        SearchTree(int n);
         virtual ~SearchTree();
 
+        void printStats();
         State* backTracking(State* root);
         State* depthFirstSearch();
         State* breadthFirstSearch();
@@ -19,10 +20,13 @@ class SearchTree
         State* AStar();
         State *IDAStar();
     private:
+        int n, visited, expanded;
+        double cpuDuration;
         State* root;
-        void freeSearchTree(State* root);
-        int n;
-        int moves;
+        State* solution;
+
+        //methods
+        void setSearchData(int visited, int expanded);
 };
 
 #endif // SEARCHTREE_H

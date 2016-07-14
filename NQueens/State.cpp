@@ -2,9 +2,10 @@
 #include "State.h"
 #include <iostream>
 
-State::State(int n)
+State::State(int n, int depth)
 {
     this->n = n;
+    this->depth = depth;
     last_visited = -1;
     table = new int[n];
     children = NULL;
@@ -13,7 +14,6 @@ State::State(int n)
     last_i = 0;
     last_j = 0;
     child_count = 0;
-    size_children = 0;
     cost = 0;
     children = new State*[(n*(n-1))/2];
     for (int i = 0; i < n; ++i) table[i] = -1;
@@ -31,26 +31,24 @@ int State::countConflicts()
     return count;
 }
 
-void State::makeChildren(int moves)
+void State::makeChildren()
 {
-    moves = moves % n;
-    int childrenCount = ((n)*(n - 1))/2;
-    this->size_children = childrenCount;
+    int childrenSize = (n*(n - 1))/2,
+        x = 0;
 
-    int x = 0;
-    child_count = this->size_children;
+    child_count = childrenSize;
 
     //children = new State*[childrenCount];
-    for(int i = 0 ; i < childrenCount; ++i)
+
+    for(int i = 0 ; i < childrenSize; ++i)
         children[i] = NULL;
 
     for (int i = 0; i < n-1; ++i)
-        for (int j = i + 1; j < n ; ++j){
-                //children[x++] = makeChild(i, j);
-                children[x++] = makeChildAlternative(i,j);
-        }
+        for (int j = i + 1; j < n ; ++j)
+            children[x++] = makeChildAlternative(i,j);
+
     //if(child_count == 0) delete []children;
-    std::cout<<"child count : " <<child_count<<std::endl;
+    //std::cout<<"child count : " <<child_count<<std::endl;
 
 
 
@@ -59,7 +57,7 @@ void State::makeChildren(int moves)
 
 State* State::makeChild(int line, int r)
 {
-    State* child = new State(n);
+    State* child = new State(n, depth + 1);
     child->setParent(this);
     for (int i = 0; i < n; ++i)
         child->setQueen(i, table[i]);
@@ -69,7 +67,6 @@ State* State::makeChild(int line, int r)
         delete child;
         child = NULL;
         this->child_count = this->child_count - 1;
-        return child;
     }
     //child->printTable();
 
@@ -77,7 +74,7 @@ State* State::makeChild(int line, int r)
 }
 State* State::makeChildAlternative(int i, int j)
 {
-    State* child = new State(n);
+    State* child = new State(n, depth + 1);
     child->setParent(this);
     for (int x = 0; x < n; ++x)
         child->setQueen(x, table[x]);
@@ -90,7 +87,6 @@ State* State::makeChildAlternative(int i, int j)
         delete child;
         child = NULL;
         this->child_count = this->child_count - 1;
-        return child;
     }
 
     return child;
@@ -132,15 +128,12 @@ State::~State()
             if(children[i] != NULL)
                 delete children[i];
         }
-
-
-
     }
+
     delete []children;
     delete []table;
-
-    //delete children;
 }
+
 bool State::hasCycle()
 {
     State *p = NULL;
@@ -179,10 +172,6 @@ int State::getVisited()
 State* State::getChild(int i)
 {
     return this->children[i];
-}
-int State::getSizeChildren()
-{
-    return this->size_children;
 }
 
 void State::setChild(int pos, State* child)
@@ -255,3 +244,9 @@ void State::setChildCountValids(int i)
 {
     this->child_count = i;
 }
+
+int State::getDepth()
+{
+    return depth;
+}
+

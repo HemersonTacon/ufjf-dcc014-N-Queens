@@ -5,12 +5,12 @@
 class State
 {
     public:
-        State(int n);
+        State(int n, int depth);
         virtual ~State();
 
         int countConflicts();
         bool hasCycle();
-        void makeChildren(int moves);
+        void makeChildren();
         void printTable();
         void setQueen(int line, int column);
         int getQueenAt(int line);
@@ -38,11 +38,13 @@ class State
         void setLast_i(int i);
         void setLast_j(int j);
         void upadateOp();
+        int getDepth();
 
     protected:
 
     private:
-        int n, size_children;
+        int n;
+        int depth;
         int last_i, last_j;
         int cost;
         int last_visited;
@@ -52,8 +54,9 @@ class State
         int *table;
         State **children;
         State *parent;
-        bool isEqual(State *parent);
 
+        //methods
+        bool isEqual(State *parent);
 };
 
 #endif // STATE_H
