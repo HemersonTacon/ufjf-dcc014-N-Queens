@@ -262,6 +262,7 @@ State* SearchTree::IDAStar()
     std::list<int> closed;
     int patamar = 0, patamar_old = -1;
     State* current = root;
+    State* child = NULL;
     current->setF(current->countConflicts());
     patamar = current->getF();
 
@@ -275,8 +276,9 @@ State* SearchTree::IDAStar()
             }
             current->upadateOp();
             if(current->getLast_i() < n - 1){
-                current = current->makeChildAlternative(current->getLast_i(), current->getLast_j()%n);
-                if(current != NULL){
+                child = current->makeChildAlternative(current->getLast_i(), current->getLast_j()%n);
+                if(child != NULL){
+                    current = child;
                     current->setCost(current->getCost() + 1);
                     current->setF(current->getCost() + current->countConflicts());
                 }
@@ -288,7 +290,7 @@ State* SearchTree::IDAStar()
                         if(current->getChild(i) != NULL)
                             delete current->getChild(i);
                     }
-                    current->set
+                    current->setChildCountValids(0);
 
                 }else{
                     current = current->getParent();

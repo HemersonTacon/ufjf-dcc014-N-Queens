@@ -26,6 +26,7 @@ class State
         void setChild(int pos, State* child);
         void setChildren(State** children);
         int getChildCountValids();
+        void setChildCountValids(int i);
         void setCost(int cost);
         int getCost();
         void setHeuristic(int h);
@@ -44,9 +45,7 @@ class State
         int n, size_children;
         int last_i, last_j;
         int cost;
-        int round;
         int last_visited;
-        int x;
         int heuristic;
         int f;
         int child_count;

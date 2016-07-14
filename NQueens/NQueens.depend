@@ -61,3 +61,34 @@
 	"State.h"
 	<iostream>
 
+1468458509 source:c:\users\principal\documents\github\ufjf-dcc014-n-queens\ufjf-dcc014-n-queens\nqueens\main.cpp
+	<iostream>
+	"State.h"
+	<time.h>
+	"SearchTree.h"
+	<stdlib.h>
+
+1468459796 c:\users\principal\documents\github\ufjf-dcc014-n-queens\ufjf-dcc014-n-queens\nqueens\state.h
+
+1468458509 c:\users\principal\documents\github\ufjf-dcc014-n-queens\ufjf-dcc014-n-queens\nqueens\searchtree.h
+	"State.h"
+	<stdlib.h>
+	<vector>
+
+1468459351 source:c:\users\principal\documents\github\ufjf-dcc014-n-queens\ufjf-dcc014-n-queens\nqueens\searchtree.cpp
+	"SearchTree.h"
+	<stack>
+	<queue>
+	<list>
+	"Utils.h"
+	<vector>
+	<algorithm>
+	<iostream>
+
+1468458509 c:\users\principal\documents\github\ufjf-dcc014-n-queens\ufjf-dcc014-n-queens\nqueens\utils.h
+
+1468458612 source:c:\users\principal\documents\github\ufjf-dcc014-n-queens\ufjf-dcc014-n-queens\nqueens\state.cpp
+	<stdlib.h>
+	"State.h"
+	<iostream>
+

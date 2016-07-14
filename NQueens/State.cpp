@@ -5,8 +5,6 @@
 State::State(int n)
 {
     this->n = n;
-    x = -1;
-    round = 1;
     last_visited = -1;
     table = new int[n];
     children = NULL;
@@ -252,4 +250,8 @@ void State::upadateOp()
     last_j = last_j + 1 + (((last_j + 1) % n)  == 0 ? ((last_j + 1) / n) + 1 : 0);
     last_i = last_j / n;
 
+}
+void State::setChildCountValids(int i)
+{
+    this->child_count = i;
 }
