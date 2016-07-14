@@ -28,6 +28,56 @@ SearchTree::~SearchTree()
     delete root;
 }
 
+void SearchTree::printStats()
+{
+    if (visited == 0)
+    {
+        std::cout << "Call \"doSearch(int opt)\" to get stats." << std::endl;
+        return;
+    }
+
+    std::cout << "Executed search in " << cpuDuration << " seconds [CPU Clock]" << std::endl;
+    std::cout << "Statistics: " << std::endl;
+    std::cout << "Solution depth: " << solution->getDepth() << std::endl;
+    std::cout << "Solution cost: " << solution->getCost() << std::endl;
+    std::cout << "Expanded nodes: " << expanded << std::endl;
+    std::cout << "Visited nodes: " << visited << std::endl;
+    std::cout << "Average branching factor: " << (double) expanded/visited << std::endl;
+}
+
+std::vector<State*> SearchTree::doSearch(int opc)
+{
+    std::clock_t startCpuTime = std::clock();
+
+    switch(opc){
+        case 1:
+            solution = backTracking(root);
+            break;
+        case 2:
+            solution = depthFirstSearch();
+            break;
+        case 3:
+            solution = breadthFirstSearch();
+            break;
+        case 4:
+            solution = orderSearch();
+            break;
+        case 5:
+            solution = greedy();
+            break;
+        case 6:
+            solution = AStar();
+            break;
+        case 7:
+            solution = IDAStar();
+            break;
+    }
+
+    cpuDuration = (std::clock() - startCpuTime) / (double)CLOCKS_PER_SEC;
+
+    return getPathTo(solution);
+}
+
 std::vector<State*> SearchTree::getPathTo(State* solution)
 {
     State *current = solution;
@@ -67,39 +117,6 @@ State* SearchTree::backTracking(State* root)
     }
 
     return nullptr;
-}
-
-std::vector<State*> SearchTree::doSearch(int opc)
-{
-    std::clock_t startCpuTime = std::clock();
-
-    switch(opc){
-        case 1:
-            solution = backTracking(root);
-            break;
-        case 2:
-            solution = depthFirstSearch();
-            break;
-        case 3:
-            solution = breadthFirstSearch();
-            break;
-        case 4:
-            solution = orderSearch();
-            break;
-        case 5:
-            solution = greedy();
-            break;
-        case 6:
-            solution = AStar();
-            break;
-        case 7:
-            solution = IDAStar();
-            break;
-    }
-
-    cpuDuration = (std::clock() - startCpuTime) / (double)CLOCKS_PER_SEC;
-
-    return getPathTo(solution);
 }
 
 State* SearchTree::depthFirstSearch(){
@@ -306,21 +323,4 @@ void SearchTree::setSearchData(int visited, int expanded)
 {
     this->visited = visited;
     this->expanded = expanded;
-}
-
-void SearchTree::printStats()
-{
-    if (visited == 0)
-    {
-        std::cout << "Call \"doSearch(int opt)\" to get stats." << std::endl;
-        return;
-    }
-
-    std::cout << "Executed search in " << cpuDuration << " seconds [CPU Clock]" << std::endl;
-    std::cout << "Statistics: " << std::endl;
-    std::cout << "Solution depth: " << solution->getDepth() << std::endl;
-    //std::cout << "Solution cost: " << cost << std::endl;
-    std::cout << "Expanded nodes: " << expanded << std::endl;
-    std::cout << "Visited nodes: " << visited << std::endl;
-    std::cout << "Average branching factor: " << (double) expanded/visited << std::endl;
 }

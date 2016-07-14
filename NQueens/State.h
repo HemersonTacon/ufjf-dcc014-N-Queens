@@ -25,7 +25,6 @@ class State
         State* makeChildPermutation(int i, int j);
         void setChild(int pos, State* child);
         void setChildren(State** children);
-        int getChildCountValids();
         void setChildCountValids(int i);
         void setCost(int cost);
         int getCost();

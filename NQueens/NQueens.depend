@@ -102,7 +102,7 @@
 	<stdlib.h>
 	<stack>
 
-1468539599 /home/arthurlorenzi/ufjf-dcc014-N-Queens/NQueens/State.h
+1468540222 /home/arthurlorenzi/ufjf-dcc014-N-Queens/NQueens/State.h
 
 1468536983 /home/arthurlorenzi/ufjf-dcc014-N-Queens/NQueens/SearchTree.h
 	"State.h"
@@ -122,7 +122,7 @@
 
 1468459964 /home/arthurlorenzi/ufjf-dcc014-N-Queens/NQueens/Utils.h
 
-1468539605 source:/home/arthurlorenzi/ufjf-dcc014-N-Queens/NQueens/State.cpp
+1468540198 source:/home/arthurlorenzi/ufjf-dcc014-N-Queens/NQueens/State.cpp
 	<stdlib.h>
 	"State.h"
 	<iostream>

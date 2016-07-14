@@ -180,10 +180,7 @@ void State::setChildren(State** children)
 {
     this->children = children;
 }
-int State::getChildCountValids()
-{
-    return this->child_count;
-}
+
 void State::setCost(int cost)
 {
     this->cost  =  cost;
