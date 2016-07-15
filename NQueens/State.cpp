@@ -25,7 +25,8 @@ int State::countConflicts()
 
     for (int i = 0; i < n; ++i)
         for (int j = i + 1; j < n; ++j)
-            if (table[i] == table[j] || j - i == abs(table[j] - table[i]))
+            if (j - i == abs(table[j] - table[i]))
+            //if (table[i] == table[j] || j - i == abs(table[j] - table[i]))
                 count++;
 
     return count;

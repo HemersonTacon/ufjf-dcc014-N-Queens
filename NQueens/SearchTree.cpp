@@ -120,159 +120,137 @@ State* SearchTree::backTracking(State* root)
 }
 
 State* SearchTree::depthFirstSearch(){
-    int visited, expanded, childrenCount;
+    int childrenCount;
     std::stack<State*> s;
-    State* current = root;
+    State* current;
 
     s.push(root);
 
-    visited = 1;
-    expanded = 0;
+    visited = expanded = 0;
 
-    while(current->countConflicts() != 0){
+    while (!s.empty() && (current = s.top()) && ++visited && current->countConflicts() > 0)
+    {
+        s.pop();
         childrenCount = current->makeChildren();
+
         expanded += childrenCount;
 
         for(int i = 0; i < childrenCount; ++i)
             s.push(current->getChild(i));
-
-        if(s.empty()) break;
-
-        s.pop();
-        current = s.top();
-        ++visited;
     }
 
-    setSearchData(visited, expanded);
-
-    return (!s.empty()) ? current : NULL;
+    return (!s.empty()) ? current : nullptr;
 }
 
 State* SearchTree::breadthFirstSearch()
 {
-    int visited, expanded, childrenCount;
+    int childrenCount;
     std::queue<State*> q;
     State* current = root;
 
     q.push(root);
 
-    visited = 1;
-    expanded = 0;
+    visited = expanded = 0;
 
-    while(current->countConflicts() != 0){
+    while (!q.empty() && (current = q.front()) && ++visited && current->countConflicts() > 0)
+    {
+        q.pop();
         childrenCount = current->makeChildren();
+
         expanded += childrenCount;
 
         for(int i = 0; i < childrenCount; ++i)
             q.push(current->getChild(i));
-
-        if(q.empty()) break;
-
-        q.pop();
-        current = q.front();
-        ++visited;
     }
 
-    setSearchData(visited, expanded);
-
-    return (!q.empty()) ? current : NULL;
+    return (!q.empty()) ? current : nullptr;
 }
 
 State* SearchTree::orderSearch()
 {
-    std::vector<State*> l;
-    State* current = root;
-    if(current == NULL)
-        return NULL;
-    root->setCost(0);
-    l.push_back(root);
-    std::sort(l.begin(), l.end(), comparator);
-    current = *(l.begin());
-    while(current->countConflicts() != 0){
-        current->makeChildren();
-        l.erase(l.begin());
-        for(int i = 0; i < (n*(n-1))/2; ++i){
-            if(current->getChild(i) != NULL){
-                current->getChild(i)->setCost(current->getChild(i)->getParent()->getCost() + 1);
-                l.push_back(current->getChild(i));
-            }
+    int childrenCount;
+    std::vector<State*> open;
+    State* current;
 
+    root->setCost(0);
+    open.push_back(root);
+
+    while (!open.empty() && ( current = *(open.begin()) ) && ++visited && current->countConflicts() > 0)
+    {
+        open.erase(open.begin());
+        childrenCount = current->makeChildren();
+
+        expanded += childrenCount;
+
+        for (int i = 0; i < childrenCount; ++i) {
+            current->getChild(i)->setCost(current->getCost() + 1);
+            open.push_back(current->getChild(i));
         }
 
-        if(l.empty()) return nullptr;
-
-        std::sort(l.begin(), l.end(), comparator);
-        current = *(l.begin());
-
+        std::sort(open.begin(), open.end(), comparator);
     }
 
-    return current;
+    return (!open.empty()) ? current : nullptr;
 }
+
 State* SearchTree::greedy()
 {
-    std::vector<State*> l;
+    int childrenCount;
+    std::vector<State*> open;
     State* current = root;
-    if(current == NULL)
-        return NULL;
-    root->setHeuristic(root->countConflicts());
-    l.push_back(root);
-    std::sort(l.begin(), l.end(), comparator2);
-    current = *(l.begin());
-    while(current->countConflicts() != 0){
-        current->makeChildren();
-        l.erase(l.begin());
-        for(int i = 0; i < (n*(n-1))/2; ++i){
-            if(current->getChild(i) != NULL){
-                current->getChild(i)->setHeuristic(current->getChild(i)->countConflicts());
-                l.push_back(current->getChild(i));
-            }
 
+    root->setHeuristic(root->countConflicts());
+    open.push_back(root);
+
+    while (!open.empty() && ( current = *(open.begin()) ) && ++visited && current->countConflicts() > 0)
+    {
+        open.erase(open.begin());
+        childrenCount = current->makeChildren();
+
+        expanded += childrenCount;
+
+        for(int i = 0; i < childrenCount; ++i){
+            current->getChild(i)->setHeuristic(current->getChild(i)->countConflicts());
+            open.push_back(current->getChild(i));
         }
 
-        if(l.empty()) return nullptr;
-
-        std::sort(l.begin(), l.end(), comparator2);
-        current = *(l.begin());
-
+        std::sort(open.begin(), open.end(), comparator2);
     }
 
-    return current;
+    return (!open.empty()) ? current : nullptr;
 }
 
 State* SearchTree::AStar()
 {
-    std::vector<State*> l;
+    int childrenCount;
+    std::vector<State*> open;
     State* current = root;
-    if(current == NULL)
-        return NULL;
+
     root->setCost(0);
     root->setHeuristic(root->countConflicts());
-    root->setF(root->getCost() + root->countConflicts());
-    l.push_back(root);
-    std::sort(l.begin(), l.end(), comparator3);
-    current = *(l.begin());
-    while(current->countConflicts() != 0){
-        current->makeChildren();
-        l.erase(l.begin());
-        for(int i = 0; i < (n*(n-1))/2; ++i){
-            if(current->getChild(i) != NULL){
-                 current->getChild(i)->setCost(current->getChild(i)->getParent()->getCost() + 1);
-                 current->getChild(i)->setHeuristic(current->countConflicts());
-                 current->getChild(i)->setF(current->getChild(i)->countConflicts() + current->getChild(i)->getHeuristic());
-                l.push_back(current->getChild(i));
-            }
+    root->setF(root->getCost() + root->getHeuristic());
+    open.push_back(root);
 
+    while (!open.empty() && ( current = *(open.begin()) ) && ++visited && current->countConflicts() > 0)
+    {
+        open.erase(open.begin());
+        childrenCount = current->makeChildren();
+
+        expanded += childrenCount;
+
+        for(int i = 0; i < childrenCount; ++i){
+            current->getChild(i)->setCost(current->getCost() + 1);
+            current->getChild(i)->setHeuristic(current->countConflicts());
+            current->getChild(i)->setF(current->getChild(i)->getCost() + current->getChild(i)->getHeuristic());
+            open.push_back(current->getChild(i));
         }
 
-        if(l.empty()) return nullptr;
-
-        std::sort(l.begin(), l.end(), comparator3);
-        current = *(l.begin());
-
+        std::sort(open.begin(), open.end(), comparator3);
     }
 
-    return current;
+    return (!open.empty()) ? current : nullptr;
 }
+
 State* SearchTree::IDAStar()
 {
     std::list<int> closed;
@@ -317,10 +295,4 @@ State* SearchTree::IDAStar()
     }
 
     return current;
-}
-
-void SearchTree::setSearchData(int visited, int expanded)
-{
-    this->visited = visited;
-    this->expanded = expanded;
 }

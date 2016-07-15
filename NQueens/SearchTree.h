@@ -19,14 +19,12 @@ class SearchTree
         State* greedy();
         State* AStar();
         State *IDAStar();
+
     private:
         int n, visited, expanded;
         double cpuDuration;
         State* root;
         State* solution;
-
-        //methods
-        void setSearchData(int visited, int expanded);
 };
 
 #endif // SEARCHTREE_H
