@@ -260,7 +260,7 @@ State* SearchTree::IDAStar()
     current->setF(current->countConflicts());
     patamar = current->getF();
 
-    while(current->countConflicts() > 0){
+    while(current->countConflicts() > 0 || current->getF() > patamar){
         if(patamar == patamar_old)
             return NULL;
         else{
@@ -272,9 +272,9 @@ State* SearchTree::IDAStar()
             if(current->getLast_i() < n - 1){
                 child = current->makeChildPermutation(current->getLast_i(), current->getLast_j()%n);
                 if(child != NULL){
+                    child->setCost(current->getCost() + 1);
+                    child->setF(child->getCost() + child->countConflicts());
                     current = child;
-                    current->setCost(current->getCost() + 1);
-                    current->setF(current->getCost() + current->countConflicts());
                 }
             }else{
                 if(current == root){
@@ -285,7 +285,9 @@ State* SearchTree::IDAStar()
                             delete current->getChild(i);
                     }
                     current->setChildCountValids(0);
-
+                    current->setLast_i(0);
+                    current->setLast_j(0);
+                    closed.clear();
                 }else{
                     current = current->getParent();
                 }
@@ -294,5 +296,5 @@ State* SearchTree::IDAStar()
 
     }
 
-    return current;
+    return (patamar >= patamar_old) ? current : nullptr;
 }
