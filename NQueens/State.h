@@ -5,55 +5,42 @@
 class State
 {
     public:
-        State(int n, int depth);
+        State(int n, int depth): State(n, depth, -1) {};
+        State(int n, int depth, int heuristicFunction);
         virtual ~State();
 
-        int countConflicts();
+        void printBoard();
+        void clearChildren();
+        void updateCost();
+        void updateHeuristicValue();
+        void updateF();
         bool hasCycle();
+        int countConflicts();
         int makeChildren();
-        void printTable();
+        State* makeChild(int i, int j);
+        State* makeNextChild();
+
+        // getters and setters
         void setQueen(int line, int column);
-        int getQueenAt(int line);
-        State* getParent();
         void setParent(State *parent);
-        int* getTable();
-        void setVisited(int val);
-        int getVisited();
-        int getSizeChildren();
-        State* getChild(int i);
-        State* makeChildMove(int line, int steps);
-        State* makeChildPermutation(int i, int j);
-        void setChild(int pos, State* child);
-        void setChildren(State** children);
-        void setChildCountValids(int i);
-        void setCost(int cost);
         int getCost();
-        void setHeuristic(int h);
-        int getHeuristic();
-        void setF(int f);
+        int getHeuristicValue();
         int getF();
-        int getLast_i();
-        int getLast_j();
-        void setLast_i(int i);
-        void setLast_j(int j);
-        void upadateOp();
         int getDepth();
+        int getQueenAt(int line);
+        int* getBoard();
+        State* getParent();
+        State* getChild(int i);
 
     private:
-        int n;
-        int depth;
-        int last_i, last_j;
-        int cost;
-        int last_visited;
-        int heuristic;
-        int f;
-        int child_count;
-        int *table;
-        State **children;
+        int n, cost, heuristicFunction, heuristicValue, f,
+            childCount, depth, childGen_i, childGen_j;
+        int *board;
         State *parent;
+        State **children;
 
-        //methods
-        bool isEqual(State *parent);
+        // methods
+        bool equals(State *parent);
 };
 
 #endif // STATE_H

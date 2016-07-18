@@ -2,21 +2,82 @@
 #include "State.h"
 #include <iostream>
 
-State::State(int n, int depth)
+State::State(int n, int depth, int heuristicFunction)
 {
     this->n = n;
     this->depth = depth;
-    last_visited = -1;
-    table = new int[n];
-    children = NULL;
-    parent = NULL;
-    f = 0;
-    last_i = 0;
-    last_j = 0;
-    child_count = 0;
-    cost = 0;
+    this->heuristicFunction = heuristicFunction;
+
+    cost = heuristicValue = f = childCount = 0;
+    childGen_i = 0;
+    childGen_j = 1;
+    board = new int[n];
+    parent = nullptr;
     children = new State*[(n*(n-1))/2];
-    for (int i = 0; i < n; ++i) table[i] = -1;
+
+    for (int i = 0; i < n; ++i) board[i] = -1;
+}
+
+State::~State()
+{
+    for (int i = 0; i < childCount; ++i)
+        delete children[i];
+
+    delete []children;
+    delete []board;
+}
+
+void State::printBoard()
+{
+    for(int i = 0; i < n; ++i)
+        std::cout<< board[i] << " ";
+
+    std::cout << std::endl;
+}
+
+void State::clearChildren()
+{
+    for(int i = 0; i < childCount; ++i)
+        delete children[i];
+
+    childCount = childGen_i = 0;
+    childGen_j = 1;
+}
+
+void State::updateCost()
+{
+    cost = parent->getCost() + 1;
+}
+
+void State::updateHeuristicValue()
+{
+    switch(heuristicFunction)
+    {
+        case 1:
+            heuristicValue = countConflicts();
+            break;
+        default:
+            heuristicValue = 0;
+    }
+}
+
+void State::updateF()
+{
+    f = cost + heuristicValue;
+}
+
+bool State::hasCycle()
+{
+    State *p = this->parent;
+
+    if(equals(p)) return true;
+
+    while(p->getParent() != nullptr){
+        if(equals(p))
+            return true;
+        p = p->getParent();
+    }
+    return false;
 }
 
 int State::countConflicts()
@@ -25,8 +86,7 @@ int State::countConflicts()
 
     for (int i = 0; i < n; ++i)
         for (int j = i + 1; j < n; ++j)
-            if (j - i == abs(table[j] - table[i]))
-            //if (table[i] == table[j] || j - i == abs(table[j] - table[i]))
+            if (j - i == abs(board[j] - board[i]))
                 count++;
 
     return count;
@@ -34,62 +94,73 @@ int State::countConflicts()
 
 int State::makeChildren()
 {
-    int x = 0, childrenSize = (n*(n - 1))/2;
     State* newState;
 
     for (int i = 0; i < n-1; ++i)
         for (int j = i + 1; j < n ; ++j)
         {
-            newState = makeChildPermutation(i,j);
+            newState = makeChild(i, j);
 
-            if (newState != NULL)
+            if (newState != nullptr)
+                children[childCount++] = newState;
+        }
+
+    for (int i = childCount; i < n*(n-1)/2; ++i)
+        children[i] = nullptr;
+
+    return childCount;
+}
+
+State* State::makeChild(int i, int j)
+{
+    State* child = new State(n, depth + 1, heuristicFunction);
+
+    for (int x = 0; x < n; ++x)
+        child->setQueen(x, board[x]);
+
+    child->setParent(this);
+    child->setQueen(i, board[j]);
+    child->setQueen(j, board[i]);
+
+    if(child->hasCycle()) {
+        delete child;
+        child = nullptr;
+    } else {
+        child->updateCost();
+        child->updateHeuristicValue();
+        child->updateF();
+    }
+
+    return child;
+}
+
+State* State::makeNextChild()
+{
+    State* newState;
+
+    for (; childGen_i < n-1; ++childGen_i, childGen_j = childGen_i + 1)
+        for (; childGen_j < n; ++childGen_j)
+        {
+            newState = makeChild(childGen_i, childGen_j);
+
+            if (newState != nullptr)
             {
-                children[x++] = newState;
-                ++child_count;
+                children[childCount++] = newState;
+
+                ++childGen_j;
+
+                return newState;
             }
         }
 
-    for (int i = x; i < childrenSize; ++i)
-        children[i] = NULL;
-
-    return child_count;
+    return nullptr;
 }
 
-State* State::makeChildMove(int line, int steps)
+// getters and setters
+
+void State::setQueen(int line, int column)
 {
-    State* child = new State(n, depth + 1);
-
-    for (int i = 0; i < n; ++i)
-        child->setQueen(i, table[i]);
-
-    child->setQueen(line, (child->getQueenAt(line) + steps) % n);
-    child->setParent(this);
-
-    if(child->hasCycle()){
-        delete child;
-        child = NULL;
-    }
-
-    return child;
-}
-
-State* State::makeChildPermutation(int i, int j)
-{
-    State* child = new State(n, depth + 1);
-
-    for (int x = 0; x < n; ++x)
-        child->setQueen(x, table[x]);
-
-    child->setQueen(i, table[j]);
-    child->setQueen(j, table[i]);
-    child->setParent(this);
-
-    if(child->hasCycle()){
-        delete child;
-        child = NULL;
-    }
-
-    return child;
+    board[line] = column;
 }
 
 void State::setParent(State* parent)
@@ -97,147 +168,19 @@ void State::setParent(State* parent)
     this->parent = parent;
 }
 
-void State::printTable()
-{
-    for(int i = 0; i < n; ++i)
-        std::cout<< table[i] << " ";
-
-    std::cout << std::endl;
-}
-
-void State::setQueen(int line, int column)
-{
-    table[line] = column;
-}
-
-int State::getQueenAt(int line)
-{
-    return table[line];
-}
-State* State::getParent()
-{
-    return this->parent;
-}
-
-State::~State()
-{
-    if(this->child_count > 0){
-        for(int i = 0; i < (n*(n-1))/2; i++){
-            if(children[i] != NULL)
-                delete children[i];
-        }
-    }
-
-    delete []children;
-    delete []table;
-}
-
-bool State::hasCycle()
-{
-    State *p = NULL;
-    p = this->parent;
-    if(isEqual(p)) return true;
-    while(p->getParent() != NULL){
-        if(isEqual(p))
-            return true;
-        p = p->getParent();
-    }
-    return false;
-}
-bool State::isEqual(State* parent)
-{
-    int *parent_table = parent->getTable();
-    for(int  i = 0; i < n; i++){
-        if(this->table[i] != parent_table[i])
-            return false;
-    }
-    return true;
-}
-int* State::getTable()
-{
-    return this->table;
-}
-
-void State::setVisited(int val)
-{
-    this->last_visited = val;
-}
-
-int State::getVisited()
-{
-    return this->last_visited;
-}
-State* State::getChild(int i)
-{
-    return this->children[i];
-}
-
-void State::setChild(int pos, State* child)
-{
-    this->children[pos] = child;
-}
-
-void State::setChildren(State** children)
-{
-    this->children = children;
-}
-
-void State::setCost(int cost)
-{
-    this->cost  =  cost;
-}
-
 int State::getCost()
 {
     return this->cost;
 }
-void State::setHeuristic(int h)
-{
-    this->heuristic = h;
-}
 
-int State::getHeuristic()
+int State::getHeuristicValue()
 {
-    return this->heuristic;
-}
-void State::setF(int f)
-{
-    this->f = f;
+    return this->heuristicValue;
 }
 
 int State::getF()
 {
     return this->f;
-}
-int State::getLast_i()
-{
-    return this->last_i;
-}
-
-int State::getLast_j()
-{
-    return this->last_j;
-}
-
-void State::setLast_i(int i)
-{
-    this->last_i = i;
-}
-
-void State::setLast_j(int j)
-{
-    this->last_j = j;
-}
-void State::upadateOp()
-{
-
-    last_j = last_j + 1 + (((last_j + 1) % n)  == 0 ? ((last_j + 1) / n) + 1 : 0);
-    last_i = last_j / n;
-
-}
-void State::setChildCountValids(int i)
-{
-    this->child_count = i;
 }
 
 int State::getDepth()
@@ -245,3 +188,34 @@ int State::getDepth()
     return depth;
 }
 
+int State::getQueenAt(int line)
+{
+    return board[line];
+}
+
+int* State::getBoard()
+{
+    return this->board;
+}
+
+State* State::getParent()
+{
+    return this->parent;
+}
+
+State* State::getChild(int i)
+{
+    return this->children[i];
+}
+
+// private methods
+
+bool State::equals(State* parent)
+{
+    int *parent_table = parent->getBoard();
+    for(int  i = 0; i < n; i++){
+        if(this->board[i] != parent_table[i])
+            return false;
+    }
+    return true;
+}

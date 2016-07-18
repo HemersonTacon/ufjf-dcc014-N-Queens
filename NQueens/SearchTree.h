@@ -6,25 +6,27 @@
 class SearchTree
 {
     public:
-        SearchTree(int n);
+        SearchTree(int n, int heuristicFunction);
         virtual ~SearchTree();
 
         void printStats();
         std::vector<State*> doSearch(int opc);
+
+    private:
+        int n, visited, expanded;
+        double searchExecutionTime;
+        State *root, *solution;
+
+        //methods
         std::vector<State*> getPathTo(State* solution);
         State* backTracking(State* root);
-        State* depthFirstSearch();
+        State* depthFirstSearch(int depthLimit);
         State* breadthFirstSearch();
+        State* bestFirstSearch(bool (*comparator)(State*, State*));
         State* orderSearch();
         State* greedy();
         State* AStar();
         State *IDAStar();
-
-    private:
-        int n, visited, expanded;
-        double cpuDuration;
-        State* root;
-        State* solution;
 };
 
 #endif // SEARCHTREE_H

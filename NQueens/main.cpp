@@ -4,29 +4,21 @@
 #include "SearchTree.h"
 #include <stdlib.h>
 #include <stack>
+
 using namespace std;
-bool contains(int sorteio, State* s, int n){
-    int* table = s->getTable();
-    for(int i = 0; i < n; i++){
-        if(sorteio == table[i])
-            return true;
-    }
 
-    return false;
-
-}
 void printPath(std::vector<State*> path){
     for(auto it = path.begin(); it != path.end(); ++it)
-        (*it)->printTable();
+        (*it)->printBoard();
 }
+
 void test()
 {
-    srand(time(NULL));
     std::vector<State*> path;
     int opc, n;
     std::cout<<"Entre com N:"<<std::endl;
     cin>>n;
-    SearchTree *tree = NULL;
+    SearchTree *tree = nullptr;
 
 
     std::cout<<"Digite 0 para sair"<<std::endl;
@@ -40,7 +32,7 @@ void test()
     cin>>opc;
     while(opc != 0){
 
-        tree = new SearchTree(n);
+        tree = new SearchTree(n, 1);
 
         path = tree->doSearch(opc);
 
