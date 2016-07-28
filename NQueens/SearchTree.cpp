@@ -1,12 +1,5 @@
 #include "SearchTree.h"
-#include <stack>
-#include <queue>
-#include <list>
 #include "Utils.h"
-#include <vector>
-#include <algorithm>
-#include <iostream>
-#include <chrono>
 
 SearchTree::SearchTree(int n, int heuristicFunction)
 {
@@ -29,48 +22,34 @@ SearchTree::~SearchTree()
 
 void SearchTree::printStats()
 {
-    if (visited == 0)
-    {
-        std::cout << "Call \"doSearch(int opt)\" to get stats." << std::endl;
-        return;
-    }
-
-    std::cout << "Executed search in " << searchExecutionTime << " seconds [CPU Clock]" << std::endl;
+    std::cout << std::endl;
     std::cout << "Statistics: " << std::endl;
-    std::cout << "Solution depth: " << solution->getDepth() << std::endl;
-    std::cout << "Solution cost: " << solution->getCost() << std::endl;
-    std::cout << "Expanded nodes: " << expanded << std::endl;
-    std::cout << "Visited nodes: " << visited << std::endl;
-    std::cout << "Average branching factor: " << (double) expanded/visited << std::endl;
+    std::cout << "  executed search in " << searchExecutionTime << " seconds [CPU Clock]" << std::endl;
+    std::cout << "  solution depth: " << solution->getDepth() << std::endl;
+    std::cout << "  solution cost: " << solution->getCost() << std::endl;
+    std::cout << "  expanded nodes: " << expanded << std::endl;
+    std::cout << "  visited nodes: " << visited << std::endl;
+    std::cout << "  average branching factor: " << (double) expanded/visited << std::endl;
 }
 
-std::vector<State*> SearchTree::doSearch(int opc)
+std::vector<State*> SearchTree::doSearch(std::string algorithm)
 {
     std::clock_t startCpuTime = std::clock();
 
-    switch(opc){
-        case 1:
-            solution = backTracking(root);
-            break;
-        case 2:
-            solution = depthFirstSearch(5 * n); // limite de profundidade fixo
-            break;
-        case 3:
-            solution = breadthFirstSearch();
-            break;
-        case 4:
-            solution = orderSearch();
-            break;
-        case 5:
-            solution = greedy();
-            break;
-        case 6:
-            solution = AStar();
-            break;
-        case 7:
-            solution = IDAStar();
-            break;
-    }
+    if (algorithm == "bcktrk")
+        solution = backTracking(root);
+    else if (algorithm == "dfs")
+        solution = depthFirstSearch(5 * n); // limite de profundidade fixo
+    else if (algorithm == "bfs")
+        solution = breadthFirstSearch();
+    else if (algorithm == "ucs")
+        solution = orderSearch();
+    else if (algorithm == "greedy")
+        solution = greedy();
+    else if (algorithm == "astr")
+        solution = AStar();
+    else if (algorithm == "idastr")
+        solution = IDAStar();
 
     searchExecutionTime = (std::clock() - startCpuTime) / (double)CLOCKS_PER_SEC;
 
@@ -162,25 +141,26 @@ State* SearchTree::breadthFirstSearch()
 State* SearchTree::bestFirstSearch(bool (*comparator)(State*, State*))
 {
     int childrenCount;
-    std::vector<State*> open;
+    MinHeap* open = new MinHeap(comparator);
     State* current;
 
-    open.push_back(root);
+    open->push(root, true);
 
-    while (!open.empty() && ( current = *(open.begin()) ) && ++visited && current->countConflicts() > 0)
+    while (!open->empty() && (current = open->top()) && ++visited && current->countConflicts() > 0)
     {
-        open.erase(open.begin());
+        open->deleteMin(true);
         childrenCount = current->makeChildren();
 
         expanded += childrenCount;
 
         for (int i = 0; i < childrenCount; ++i)
-            open.push_back(current->getChild(i));
-
-        std::sort(open.begin(), open.end(), comparator);
+            open->push(current->getChild(i), true);
     }
 
-    return (!open.empty()) ? current : nullptr;
+    current = (!open->empty()) ? current : nullptr;
+    delete open;
+
+    return current;
 }
 
 State* SearchTree::orderSearch()

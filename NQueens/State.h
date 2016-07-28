@@ -1,6 +1,7 @@
 #ifndef STATE_H
 #define STATE_H
 
+#include <iostream>
 
 class State
 {
@@ -17,8 +18,8 @@ class State
         bool hasCycle();
         int countConflicts();
         int makeChildren();
-        State* makeChild(int i, int j);
         State* makeNextChild();
+        State* makeChild(int i, int j);
 
         // getters and setters
         void setQueen(int line, int column);

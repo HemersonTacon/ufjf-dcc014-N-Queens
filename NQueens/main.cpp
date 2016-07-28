@@ -1,65 +1,162 @@
-#include <iostream>
-#include "State.h"
-#include <time.h>
-#include "SearchTree.h"
 #include <stdlib.h>
+#include <time.h>
+#include <iostream>
 #include <stack>
+#include "SearchTree.h"
+#include "State.h"
 
-using namespace std;
+#include <stdexcept>
 
-void printPath(std::vector<State*> path){
-    for(auto it = path.begin(); it != path.end(); ++it)
-        (*it)->printBoard();
+void printUsage()
+{
+    std::cout << "usage: nqueens n algorithm [-d depthm] [-h heuristic] [-s] [-p]" << std::endl;
+    std::cout << "  n: instance number of queens (> 3)" << std::endl;
+    std::cout << "  algorithm: algorithm to find a solution (see list below)" << std::endl;
+    std::cout << "  -d depthm: multiplier for 'n' to define depth limit for DFS" << std::endl;
+    std::cout << "                (default depth is 5, which implies in a 5*n max depth)" << std::endl;
+    std::cout << "  -h heuristic: heuristic function to evaluate states (0-1)" << std::endl;
+    std::cout << "                (default heuristic is 0, which returns a constant value)" << std::endl;
+    std::cout << "  -s: prints search statistics" << std::endl;
+    std::cout << "  -p: prints path to found solution" << std::endl;
+    std::cout << std::endl << "Avaiable algorithms are:" << std::endl;
+    std::cout << "   bcktrk    Backtracking" << std::endl;
+    std::cout << "   dfs       Depth-first search" << std::endl;
+    std::cout << "   bfs       Breadth-first search" << std::endl;
+    std::cout << "   ucs       Uniform-cost search" << std::endl;
+    std::cout << "   greedy    Greedy best-first search/pure heuristic search" << std::endl;
+    std::cout << "   astr      A*" << std::endl;
+    std::cout << "   idastr    IDA*" << std::endl;
 }
 
-void test()
+void printError(std::string message)
 {
-    std::vector<State*> path;
-    int opc, n;
-    std::cout<<"Entre com N:"<<std::endl;
-    cin>>n;
-    SearchTree *tree = nullptr;
+    std::cout << "aborted: " << message << std::endl << std::endl;
 
+    printUsage();
+}
 
-    std::cout<<"Digite 0 para sair"<<std::endl;
-    std::cout<<"Digite 1 para backtracking"<<std::endl;
-    std::cout<<"Digite 2 para DFS"<<std::endl;
-    std::cout<<"Digite 3 para largura"<<std::endl;
-    std::cout<<"Digite 4 para ordenada"<<std::endl;
-    std::cout<<"Digite 5 para gulosa"<<std::endl;
-    std::cout<<"Digite 6 para A*"<<std::endl;
-    std::cout<<"Digite 7 para IDA*"<<std::endl;
-    cin>>opc;
-    while(opc != 0){
+void search(bool printPath, bool printStats, int n, int h, int d, std::string algorithm)
+{
+    SearchTree* tree = new SearchTree(n, h);
 
-        tree = new SearchTree(n, 1);
+    std::vector<State*> path = tree->doSearch(algorithm);
 
-        path = tree->doSearch(opc);
+    if(path.size() == 0)
+        std::cout << "Search finished: no solution" << std::endl;
+    else if (printPath)
+    {
+        std::cout << "Search finished, path to solution:" << std::endl;
 
-        if(path.size() == 0)
-            std::cout<<"No solution"<<std::endl;
-        else
-            printPath(path);
+        for(auto it = path.begin(); it != path.end(); ++it)
+            (*it)->printBoard();
+    }
+    else
+    {
+        std::cout << "Search finished, found solution:" << std::endl;
+        auto it = path.end();
+        --it;
+        (*it)->printBoard();
+    }
 
+    if (printStats)
         tree->printStats();
+}
 
-        delete tree;
+bool getParameters(int argc, char* argv[], bool &printStats, bool &printPath, int &n, int &h, int &d, std::string &algorithm)
+{
+    bool foundH, foundD;
 
-        std::cout<<"Digite 0 para sair"<<std::endl;
-        std::cout<<"Digite 1 para backtracking"<<std::endl;
-        std::cout<<"Digite 2 para DPS"<<std::endl;
-        std::cout<<"Digite 3 para largura"<<std::endl;
-        std::cout<<"Digite 4 para ordenada"<<std::endl;
-        std::cout<<"Digite 5 para gulosa"<<std::endl;
-        std::cout<<"Digite 6 para A*"<<std::endl;
-        std::cout<<"Digite 7 para IDA*"<<std::endl;
-        cin>>opc;
+    try {
+        n = std::stoi(argv[1]);
+    } catch (const std::invalid_argument ia) {
+        printError("parameter 'n' must be an integer");
+
+        return false;
+    }
+
+    if (n < 4) {
+        printError("parameter 'n' must be greater than 3");
+
+        return false;
+    }
+
+    algorithm = argv[2];
+
+    if (!(algorithm == "bcktrk" || algorithm == "dfs" || algorithm == "bfs"
+        || algorithm == "ucs" || algorithm == "greedy" || algorithm == "astr" || algorithm == "idastr"))
+    {
+        printError("invalid algorithm");
+
+        return false;
+    }
+
+    printStats = printPath = false;
+
+    for (int i = 3; i < argc; ++i) {
+        std::string s(argv[i]);
+
+        if (foundH) {
+            try {
+                h = std::stoi(argv[i]);
+            } catch (const std::invalid_argument ia) {
+                printError("parameter 'heuristic' must be an integer");
+
+                return false;
+            }
+
+            foundH = false;
+        } else if (foundD) {
+            try {
+                d = std::stoi(argv[i]);
+            } catch (const std::invalid_argument ia) {
+                printError("parameter 'depthm' must be an integer");
+
+                return false;
+            }
+
+            foundD = false;
+        }
+
+        if (s == "-s") {
+            printStats = true;
+            continue;
+        } else if (s == "-p") {
+            printPath = true;
+            continue;
+        } else if (s == "-h") {
+            foundH = true;
+            continue;
+        } else if (s == "-d") {
+            foundD = true;
+            continue;
+        }
+    }
+
+    if (h < 0 || h > 1) {
+        printError("parameter 'h' must be between 0 and 1");
+
+        return false;
     }
 }
 
-int main()
+int main(int argc, char* argv[])
 {
-    test();
+    bool printStats, printPath;
+    int n, h = 0, d = 5;
+    std::string algorithm;
+
+    if (argc == 1 || argc < 3 || argc > 9)
+    {
+        printUsage();
+
+        return 0;
+    }
+
+    // gets parameters from args
+    if (!getParameters(argc, argv, printStats, printPath, n, h, d, algorithm))
+        return 0;
+
+    search(printPath, printStats, n, h, d, algorithm);
 
     return 0;
 }

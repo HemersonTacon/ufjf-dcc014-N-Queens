@@ -1,16 +1,24 @@
 #ifndef SEARCHTREE_H
 #define SEARCHTREE_H
-#include "State.h"
-#include <stdlib.h>
+
+#include <iostream>
+#include <chrono>
 #include <vector>
+#include <stack>
+#include <queue>
+#include <list>
+#include "State.h"
+#include "MinHeap.h"
+
 class SearchTree
 {
     public:
+        SearchTree(int n): SearchTree(n, 0) {};
         SearchTree(int n, int heuristicFunction);
         virtual ~SearchTree();
 
         void printStats();
-        std::vector<State*> doSearch(int opc);
+        std::vector<State*> doSearch(std::string algorithm);
 
     private:
         int n, visited, expanded;

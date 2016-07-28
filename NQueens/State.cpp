@@ -1,6 +1,5 @@
 #include <stdlib.h>
 #include "State.h"
-#include <iostream>
 
 State::State(int n, int depth, int heuristicFunction)
 {
@@ -29,10 +28,12 @@ State::~State()
 
 void State::printBoard()
 {
+    std::cout << "[ ";
+
     for(int i = 0; i < n; ++i)
         std::cout<< board[i] << " ";
 
-    std::cout << std::endl;
+    std::cout << "]" << std::endl;
 }
 
 void State::clearChildren()
@@ -111,6 +112,28 @@ int State::makeChildren()
     return childCount;
 }
 
+State* State::makeNextChild()
+{
+    State* newState;
+
+    for (; childGen_i < n-1; ++childGen_i, childGen_j = childGen_i + 1)
+        for (; childGen_j < n; ++childGen_j)
+        {
+            newState = makeChild(childGen_i, childGen_j);
+
+            if (newState != nullptr)
+            {
+                children[childCount++] = newState;
+
+                ++childGen_j;
+
+                return newState;
+            }
+        }
+
+    return nullptr;
+}
+
 State* State::makeChild(int i, int j)
 {
     State* child = new State(n, depth + 1, heuristicFunction);
@@ -132,28 +155,6 @@ State* State::makeChild(int i, int j)
     }
 
     return child;
-}
-
-State* State::makeNextChild()
-{
-    State* newState;
-
-    for (; childGen_i < n-1; ++childGen_i, childGen_j = childGen_i + 1)
-        for (; childGen_j < n; ++childGen_j)
-        {
-            newState = makeChild(childGen_i, childGen_j);
-
-            if (newState != nullptr)
-            {
-                children[childCount++] = newState;
-
-                ++childGen_j;
-
-                return newState;
-            }
-        }
-
-    return nullptr;
 }
 
 // getters and setters

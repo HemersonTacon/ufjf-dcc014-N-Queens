@@ -7,7 +7,7 @@
 		<Option compiler="gcc" />
 		<Build>
 			<Target title="Debug">
-				<Option output="bin/Debug/NQueens" prefix_auto="1" extension_auto="1" />
+				<Option output="bin/Debug/nqueens" prefix_auto="1" extension_auto="1" />
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
@@ -35,6 +35,8 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="MinHeap.cpp" />
+		<Unit filename="MinHeap.h" />
 		<Unit filename="SearchTree.cpp" />
 		<Unit filename="SearchTree.h" />
 		<Unit filename="State.cpp" />
