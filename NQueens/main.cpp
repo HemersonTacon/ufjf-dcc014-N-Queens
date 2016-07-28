@@ -1,19 +1,15 @@
-#include <stdlib.h>
-#include <time.h>
 #include <iostream>
-#include <stack>
+#include <stdexcept>
 #include "SearchTree.h"
 #include "State.h"
 
-#include <stdexcept>
-
 void printUsage()
 {
-    std::cout << "usage: nqueens n algorithm [-d depthm] [-h heuristic] [-s] [-p]" << std::endl;
+    std::cout << "usage: nqueens n algorithm [-d depth] [-h heuristic] [-s] [-p]" << std::endl;
     std::cout << "  n: instance number of queens (> 3)" << std::endl;
     std::cout << "  algorithm: algorithm to find a solution (see list below)" << std::endl;
-    std::cout << "  -d depthm: multiplier for 'n' to define depth limit for DFS" << std::endl;
-    std::cout << "                (default depth is 5, which implies in a 5*n max depth)" << std::endl;
+    std::cout << "  -d depth: depth limit for DFS (>0)" << std::endl;
+    std::cout << "                (default depth is 5 * n)" << std::endl;
     std::cout << "  -h heuristic: heuristic function to evaluate states (0-1)" << std::endl;
     std::cout << "                (default heuristic is 0, which returns a constant value)" << std::endl;
     std::cout << "  -s: prints search statistics" << std::endl;
@@ -38,6 +34,9 @@ void printError(std::string message)
 void search(bool printPath, bool printStats, int n, int h, int d, std::string algorithm)
 {
     SearchTree* tree = new SearchTree(n, h);
+
+    if (d != 5 * n)
+        tree->setDfsDepthLimit(d);
 
     std::vector<State*> path = tree->doSearch(algorithm);
 
@@ -80,6 +79,7 @@ bool getParameters(int argc, char* argv[], bool &printStats, bool &printPath, in
         return false;
     }
 
+    d = 5 * n; // default depth limit for DFS
     algorithm = argv[2];
 
     if (!(algorithm == "bcktrk" || algorithm == "dfs" || algorithm == "bfs"
@@ -90,7 +90,7 @@ bool getParameters(int argc, char* argv[], bool &printStats, bool &printPath, in
         return false;
     }
 
-    printStats = printPath = false;
+    printStats = printPath = foundH = foundD = false;
 
     for (int i = 3; i < argc; ++i) {
         std::string s(argv[i]);
@@ -137,12 +137,20 @@ bool getParameters(int argc, char* argv[], bool &printStats, bool &printPath, in
 
         return false;
     }
+
+    if (d < 1) {
+        printError("parameter 'd' must be greater than 0");
+
+        return false;
+    }
+
+    return true;
 }
 
 int main(int argc, char* argv[])
 {
     bool printStats, printPath;
-    int n, h = 0, d = 5;
+    int n, h = 0, d;
     std::string algorithm;
 
     if (argc == 1 || argc < 3 || argc > 9)

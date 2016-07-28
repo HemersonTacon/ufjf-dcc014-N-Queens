@@ -20,12 +20,19 @@ class SearchTree
         void printStats();
         std::vector<State*> doSearch(std::string algorithm);
 
+        // getters and setters
+        void setDfsDepthLimit(int dfsDepthLimit);
+        int getDfsDepthLimit();
+
     private:
-        int n, visited, expanded;
+        int n, dfsDepthLimit, visited, expanded, limited;
         double searchExecutionTime;
         State *root, *solution;
 
         //methods
+        static bool costComparator (State* i, State* j);
+        static bool heuristicComparator (State* i, State* j);
+        static bool fComparator (State* i, State* j);
         std::vector<State*> getPathTo(State* solution);
         State* backTracking(State* root);
         State* depthFirstSearch(int depthLimit);

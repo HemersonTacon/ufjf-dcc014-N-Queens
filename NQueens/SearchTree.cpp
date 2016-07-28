@@ -4,8 +4,10 @@
 SearchTree::SearchTree(int n, int heuristicFunction)
 {
     this->n = n;
+    this->dfsDepthLimit = 5 * n;
     this->visited = 0;
     this->expanded = 0;
+    this->limited = 0;
     this->searchExecutionTime = 0;
     this->root = new State(n, 0, heuristicFunction);
 
@@ -25,11 +27,14 @@ void SearchTree::printStats()
     std::cout << std::endl;
     std::cout << "Statistics: " << std::endl;
     std::cout << "  executed search in " << searchExecutionTime << " seconds [CPU Clock]" << std::endl;
-    std::cout << "  solution depth: " << solution->getDepth() << std::endl;
-    std::cout << "  solution cost: " << solution->getCost() << std::endl;
+    if (solution != nullptr)
+    {
+        std::cout << "  solution depth: " << solution->getDepth() << std::endl;
+        std::cout << "  solution cost: " << solution->getCost() << std::endl;
+    }
     std::cout << "  expanded nodes: " << expanded << std::endl;
     std::cout << "  visited nodes: " << visited << std::endl;
-    std::cout << "  average branching factor: " << (double) expanded/visited << std::endl;
+    std::cout << "  average branching factor: " << (double) expanded/(visited - limited) << std::endl;
 }
 
 std::vector<State*> SearchTree::doSearch(std::string algorithm)
@@ -39,7 +44,7 @@ std::vector<State*> SearchTree::doSearch(std::string algorithm)
     if (algorithm == "bcktrk")
         solution = backTracking(root);
     else if (algorithm == "dfs")
-        solution = depthFirstSearch(5 * n); // limite de profundidade fixo
+        solution = depthFirstSearch(dfsDepthLimit);
     else if (algorithm == "bfs")
         solution = breadthFirstSearch();
     else if (algorithm == "ucs")
@@ -54,6 +59,30 @@ std::vector<State*> SearchTree::doSearch(std::string algorithm)
     searchExecutionTime = (std::clock() - startCpuTime) / (double)CLOCKS_PER_SEC;
 
     return getPathTo(solution);
+}
+
+void SearchTree::setDfsDepthLimit(int dfsDepthLimit)
+{
+    this->dfsDepthLimit = dfsDepthLimit;
+}
+
+int SearchTree::getDfsDepthLimit()
+{
+    return dfsDepthLimit;
+}
+
+bool SearchTree::costComparator (State* i, State* j)
+{
+    return i->getCost() < j ->getCost();
+}
+
+bool SearchTree::heuristicComparator (State* i, State* j) {
+    return i->getHeuristicValue() < j ->getHeuristicValue();
+}
+
+bool SearchTree::fComparator (State* i, State* j)
+{
+    return i->getF() < j ->getF();
 }
 
 std::vector<State*> SearchTree::getPathTo(State* solution)
@@ -111,6 +140,8 @@ State* SearchTree::depthFirstSearch(int depthLimit){
             for(int i = 0; i < childrenCount; ++i)
                 s.push(current->getChild(i));
         }
+        else
+            ++limited;
     }
 
     return (!s.empty()) ? current : nullptr;
@@ -165,17 +196,17 @@ State* SearchTree::bestFirstSearch(bool (*comparator)(State*, State*))
 
 State* SearchTree::orderSearch()
 {
-    return bestFirstSearch(comparator);
+    return bestFirstSearch(costComparator);
 }
 
 State* SearchTree::greedy()
 {
-    return bestFirstSearch(comparator2);
+    return bestFirstSearch(heuristicComparator);
 }
 
 State* SearchTree::AStar()
 {
-    return bestFirstSearch(comparator3);
+    return bestFirstSearch(fComparator);
 }
 
 State* SearchTree::IDAStar()
@@ -208,7 +239,12 @@ State* SearchTree::IDAStar()
             else if (current == root)
             {
                 patamar_old = patamar;
-                patamar = findMin(closed);
+
+                patamar = *(closed.begin());
+                // patamar = min(closed);
+                for(auto it = closed.begin(); it!= closed.end(); ++it)
+                    if (*it < patamar)
+                        patamar = *it;
 
                 current->clearChildren();
                 closed.clear();
