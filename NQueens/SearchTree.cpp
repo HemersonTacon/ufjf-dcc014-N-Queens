@@ -8,7 +8,7 @@ SearchTree::SearchTree(int n, int heuristicFunction)
     this->visited = 0;
     this->expanded = 0;
     this->limited = 0;
-    this->searchExecutionTime = 0;
+    this->searchCpuTime = this->searchWallTime = 0;
     this->root = new State(n, 0, heuristicFunction);
 
     for (int i = 0; i < n; ++i) root->setQueen(i, i);
@@ -26,7 +26,9 @@ void SearchTree::printStats()
 {
     std::cout << std::endl;
     std::cout << "Statistics: " << std::endl;
-    std::cout << "  executed search in " << searchExecutionTime << " seconds [CPU Clock]" << std::endl;
+    std::cout << "  executed search in :" << std::endl;
+    std::cout << "    - " << searchCpuTime << " seconds [CPU Clock]" << std::endl;
+    std::cout << "    - " << searchWallTime << " seconds [Wall Clock]" << std::endl;
     if (solution != nullptr)
     {
         std::cout << "  solution depth: " << solution->getDepth() << std::endl;
@@ -39,6 +41,9 @@ void SearchTree::printStats()
 
 std::vector<State*> SearchTree::doSearch(std::string algorithm)
 {
+    timespec startWallTime, finishWallTime;
+    clock_gettime(CLOCK_MONOTONIC, &startWallTime);
+
     std::clock_t startCpuTime = std::clock();
 
     if (algorithm == "bcktrk")
@@ -56,7 +61,9 @@ std::vector<State*> SearchTree::doSearch(std::string algorithm)
     else if (algorithm == "idastr")
         solution = IDAStar();
 
-    searchExecutionTime = (std::clock() - startCpuTime) / (double)CLOCKS_PER_SEC;
+    searchCpuTime = (std::clock() - startCpuTime) / (double)CLOCKS_PER_SEC;
+    clock_gettime(CLOCK_MONOTONIC, &finishWallTime);
+    searchWallTime = (finishWallTime.tv_sec - startWallTime.tv_sec) + (finishWallTime.tv_nsec - startWallTime.tv_nsec) / 1000000000.0;
 
     return getPathTo(solution);
 }
@@ -73,16 +80,16 @@ int SearchTree::getDfsDepthLimit()
 
 bool SearchTree::costComparator (State* i, State* j)
 {
-    return i->getCost() < j ->getCost();
+    return i->getCost() < j->getCost();
 }
 
 bool SearchTree::heuristicComparator (State* i, State* j) {
-    return i->getHeuristicValue() < j ->getHeuristicValue();
+    return i->getHeuristicValue() < j->getHeuristicValue();
 }
 
 bool SearchTree::fComparator (State* i, State* j)
 {
-    return i->getF() < j ->getF();
+    return i->getF() < j->getF();
 }
 
 std::vector<State*> SearchTree::getPathTo(State* solution)

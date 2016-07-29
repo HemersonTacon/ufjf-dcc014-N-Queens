@@ -59,6 +59,8 @@ void search(bool printPath, bool printStats, int n, int h, int d, std::string al
 
     if (printStats)
         tree->printStats();
+
+    delete tree;
 }
 
 bool getParameters(int argc, char* argv[], bool &printStats, bool &printPath, int &n, int &h, int &d, std::string &algorithm)
@@ -109,7 +111,7 @@ bool getParameters(int argc, char* argv[], bool &printStats, bool &printPath, in
             try {
                 d = std::stoi(argv[i]);
             } catch (const std::invalid_argument ia) {
-                printError("parameter 'depthm' must be an integer");
+                printError("parameter 'depth' must be an integer");
 
                 return false;
             }
@@ -147,24 +149,87 @@ bool getParameters(int argc, char* argv[], bool &printStats, bool &printPath, in
     return true;
 }
 
+void printMenu()
+{
+    std::cout << std::endl;
+    std::cout << "Algorithm to find solution:" << std::endl;
+    std::cout << "  1 - backtracking        2 - DFS"  << std::endl;
+    std::cout << "  3 - BFS                 4 - UCS"  << std::endl;
+    std::cout << "  5 - greedy              6 - A*" << std::endl;
+    std::cout << "  7 - IDA*" << std::endl << std::endl;
+    std::cout << "[Exit: 0]" << std::endl << std::endl;
+    std::cout << "Option: ";
+}
+
+void startMenu()
+{
+    int opc, n, d = 0;
+    std::string algorithm;
+    std::vector<State*> path;
+    SearchTree *tree = nullptr;
+
+    std::cout << "Number of queens (n): ";
+    std::cin >> n;
+
+    if (n < 4) {
+        std::cout << "Parameter 'n' must be greater than 3.";
+        return;
+    }
+
+    printMenu();
+
+    while(std::cin >> opc && opc != 0){
+
+        if (opc < 0 || opc > 7)
+            continue;
+
+        switch(opc)
+        {
+            case 1: algorithm = "bcktrk"; break;
+            case 2: algorithm = "dfs"; break;
+            case 3: algorithm = "bfs"; break;
+            case 4: algorithm = "ucs"; break;
+            case 5: algorithm = "greedy"; break;
+            case 6: algorithm = "astr"; break;
+            case 7: algorithm = "idastr"; break;
+        }
+
+        if (opc == 2)
+        {
+            std::cout << "Depth limit: ";
+
+            while (std::cin >> d && d < 1)
+                std::cout << "Parameter 'd' must be greater than 0." << std::endl << "Depth limit: ";
+        }
+
+        search(true, true, n, 1, d, algorithm);
+
+        printMenu();
+    }
+}
+
 int main(int argc, char* argv[])
 {
     bool printStats, printPath;
     int n, h = 0, d;
     std::string algorithm;
 
-    if (argc == 1 || argc < 3 || argc > 9)
+    if (argc <= 1) //no args passed
+        startMenu();
+    else
     {
-        printUsage();
+        if (argc < 3 || argc > 9)
+        {
+            printUsage();
 
-        return 0;
+            return 0;
+        }
+        // gets parameters from args
+        if (!getParameters(argc, argv, printStats, printPath, n, h, d, algorithm))
+            return 0;
+
+        search(printPath, printStats, n, h, d, algorithm);
     }
-
-    // gets parameters from args
-    if (!getParameters(argc, argv, printStats, printPath, n, h, d, algorithm))
-        return 0;
-
-    search(printPath, printStats, n, h, d, algorithm);
 
     return 0;
 }

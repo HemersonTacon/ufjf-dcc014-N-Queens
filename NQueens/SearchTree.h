@@ -26,7 +26,7 @@ class SearchTree
 
     private:
         int n, dfsDepthLimit, visited, expanded, limited;
-        double searchExecutionTime;
+        double searchCpuTime, searchWallTime;
         State *root, *solution;
 
         //methods

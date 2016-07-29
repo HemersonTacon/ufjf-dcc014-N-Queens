@@ -94,7 +94,7 @@
 	"State.h"
 	<iostream>
 
-1469674163 source:/home/arthurlorenzi/ufjf-dcc014-N-Queens/NQueens/main.cpp
+1469836022 source:/home/arthurlorenzi/ufjf-dcc014-N-Queens/NQueens/main.cpp
 	<iostream>
 	<stdexcept>
 	"SearchTree.h"
@@ -103,7 +103,7 @@
 1469553348 /home/arthurlorenzi/ufjf-dcc014-N-Queens/NQueens/State.h
 	<iostream>
 
-1469678050 /home/arthurlorenzi/ufjf-dcc014-N-Queens/NQueens/SearchTree.h
+1469832304 /home/arthurlorenzi/ufjf-dcc014-N-Queens/NQueens/SearchTree.h
 	<iostream>
 	<chrono>
 	<vector>
@@ -113,7 +113,7 @@
 	"State.h"
 	"MinHeap.h"
 
-1469677427 source:/home/arthurlorenzi/ufjf-dcc014-N-Queens/NQueens/SearchTree.cpp
+1469833288 source:/home/arthurlorenzi/ufjf-dcc014-N-Queens/NQueens/SearchTree.cpp
 	"SearchTree.h"
 	"Utils.h"
 
