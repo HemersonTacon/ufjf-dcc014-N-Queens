@@ -68,13 +68,17 @@ bool getParameters(int argc, char* argv[], bool &printStats, bool &printPath, in
 {
     bool foundH, foundD;
 
+    #ifdef __unix
     try {
-        n = atoi(argv[1]);
+        n = std::stoi(argv[1]);
     } catch (const std::invalid_argument ia) {
         printError("parameter 'n' must be an integer");
 
         return false;
     }
+    #elif _WIN32
+    n = atoi(argv[1]);
+    #endif
 
     if (n < 4) {
         printError("parameter 'n' must be greater than 3");
@@ -99,24 +103,30 @@ bool getParameters(int argc, char* argv[], bool &printStats, bool &printPath, in
         std::string s(argv[i]);
 
         if (foundH) {
+            #ifdef __unix
             try {
-                h = atoi(argv[i]);
+                h = std::stoi(argv[i]);
             } catch (const std::invalid_argument ia) {
                 printError("parameter 'heuristic' must be an integer");
 
                 return false;
             }
-
+            #elif _WIN32
+            h = atoi(argv[i]);
+            #endif
             foundH = false;
         } else if (foundD) {
+            #ifdef __unix
             try {
-                d = atoi(argv[i]);
+                d = std::stoi(argv[i]);
             } catch (const std::invalid_argument ia) {
                 printError("parameter 'depth' must be an integer");
 
                 return false;
             }
-
+            #elif _WIN32
+            d = atoi(argv[i]);
+            #endif
             foundD = false;
         }
 
@@ -166,8 +176,6 @@ void startMenu()
 {
     int opc, n, d = 0;
     std::string algorithm;
-    std::vector<State*> path;
-    SearchTree *tree = nullptr;
 
     std::cout << "Number of queens (n): ";
     std::cin >> n;

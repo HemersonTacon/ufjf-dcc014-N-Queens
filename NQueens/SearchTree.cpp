@@ -41,12 +41,12 @@ void SearchTree::printStats()
 
 std::vector<State*> SearchTree::doSearch(std::string algorithm)
 {
-    #ifdef _UNIX
+    #ifdef __unix
     timespec startWallTime, finishWallTime;
     clock_gettime(CLOCK_MONOTONIC, &startWallTime);
-
-    std::clock_t startCpuTime = std::clock();
     #endif
+    std::clock_t startCpuTime = std::clock();
+
     if (algorithm == "bcktrk")
         solution = backTracking(root);
     else if (algorithm == "dfs")
@@ -61,8 +61,9 @@ std::vector<State*> SearchTree::doSearch(std::string algorithm)
         solution = AStar();
     else if (algorithm == "idastr")
         solution = IDAStar();
-    #ifndef _WIN32
+
     searchCpuTime = (std::clock() - startCpuTime) / (double)CLOCKS_PER_SEC;
+    #ifdef __unix
     clock_gettime(CLOCK_MONOTONIC, &finishWallTime);
     searchWallTime = (finishWallTime.tv_sec - startWallTime.tv_sec) + (finishWallTime.tv_nsec - startWallTime.tv_nsec) / 1000000000.0;
     #endif
