@@ -1,6 +1,6 @@
 #include "SearchTree.h"
 #include "Utils.h"
-
+//#define _UNIX
 SearchTree::SearchTree(int n, int heuristicFunction)
 {
     this->n = n;
@@ -41,11 +41,12 @@ void SearchTree::printStats()
 
 std::vector<State*> SearchTree::doSearch(std::string algorithm)
 {
+    #ifdef _UNIX
     timespec startWallTime, finishWallTime;
     clock_gettime(CLOCK_MONOTONIC, &startWallTime);
 
     std::clock_t startCpuTime = std::clock();
-
+    #endif
     if (algorithm == "bcktrk")
         solution = backTracking(root);
     else if (algorithm == "dfs")
@@ -60,11 +61,11 @@ std::vector<State*> SearchTree::doSearch(std::string algorithm)
         solution = AStar();
     else if (algorithm == "idastr")
         solution = IDAStar();
-
+    #ifndef _WIN32
     searchCpuTime = (std::clock() - startCpuTime) / (double)CLOCKS_PER_SEC;
     clock_gettime(CLOCK_MONOTONIC, &finishWallTime);
     searchWallTime = (finishWallTime.tv_sec - startWallTime.tv_sec) + (finishWallTime.tv_nsec - startWallTime.tv_nsec) / 1000000000.0;
-
+    #endif
     return getPathTo(solution);
 }
 

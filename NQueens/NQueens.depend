@@ -63,36 +63,35 @@
 	"State.h"
 	<iostream>
 
-1468458509 source:c:\users\principal\documents\github\ufjf-dcc014-n-queens\ufjf-dcc014-n-queens\nqueens\main.cpp
+1469907482 source:c:\users\principal\documents\github\ufjf-dcc014-n-queens\ufjf-dcc014-n-queens\nqueens\main.cpp
 	<iostream>
-	"State.h"
-	<time.h>
+	<stdexcept>
 	"SearchTree.h"
-	<stdlib.h>
-
-1468459796 c:\users\principal\documents\github\ufjf-dcc014-n-queens\ufjf-dcc014-n-queens\nqueens\state.h
-
-1468458509 c:\users\principal\documents\github\ufjf-dcc014-n-queens\ufjf-dcc014-n-queens\nqueens\searchtree.h
 	"State.h"
 	<stdlib.h>
+
+1469907199 c:\users\principal\documents\github\ufjf-dcc014-n-queens\ufjf-dcc014-n-queens\nqueens\state.h
+	<iostream>
+
+1469907199 c:\users\principal\documents\github\ufjf-dcc014-n-queens\ufjf-dcc014-n-queens\nqueens\searchtree.h
+	<iostream>
+	<chrono>
 	<vector>
-
-1468459351 source:c:\users\principal\documents\github\ufjf-dcc014-n-queens\ufjf-dcc014-n-queens\nqueens\searchtree.cpp
-	"SearchTree.h"
 	<stack>
 	<queue>
 	<list>
+	"State.h"
+	"MinHeap.h"
+
+1469908341 source:c:\users\principal\documents\github\ufjf-dcc014-n-queens\ufjf-dcc014-n-queens\nqueens\searchtree.cpp
+	"SearchTree.h"
 	"Utils.h"
-	<vector>
-	<algorithm>
-	<iostream>
 
-1468458509 c:\users\principal\documents\github\ufjf-dcc014-n-queens\ufjf-dcc014-n-queens\nqueens\utils.h
+1469907199 c:\users\principal\documents\github\ufjf-dcc014-n-queens\ufjf-dcc014-n-queens\nqueens\utils.h
 
-1468458612 source:c:\users\principal\documents\github\ufjf-dcc014-n-queens\ufjf-dcc014-n-queens\nqueens\state.cpp
+1469907199 source:c:\users\principal\documents\github\ufjf-dcc014-n-queens\ufjf-dcc014-n-queens\nqueens\state.cpp
 	<stdlib.h>
 	"State.h"
-	<iostream>
 
 1469836022 source:/home/arthurlorenzi/ufjf-dcc014-N-Queens/NQueens/main.cpp
 	<iostream>
@@ -130,4 +129,12 @@
 	<math.h>
 	<vector>
 	"State.h"
+
+1469907199 c:\users\principal\documents\github\ufjf-dcc014-n-queens\ufjf-dcc014-n-queens\nqueens\minheap.h
+	<math.h>
+	<vector>
+	"State.h"
+
+1469907199 source:c:\users\principal\documents\github\ufjf-dcc014-n-queens\ufjf-dcc014-n-queens\nqueens\minheap.cpp
+	"MinHeap.h"
 

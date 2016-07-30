@@ -2,6 +2,7 @@
 #include <stdexcept>
 #include "SearchTree.h"
 #include "State.h"
+#include <stdlib.h>
 
 void printUsage()
 {
@@ -68,7 +69,7 @@ bool getParameters(int argc, char* argv[], bool &printStats, bool &printPath, in
     bool foundH, foundD;
 
     try {
-        n = std::stoi(argv[1]);
+        n = atoi(argv[1]);
     } catch (const std::invalid_argument ia) {
         printError("parameter 'n' must be an integer");
 
@@ -99,7 +100,7 @@ bool getParameters(int argc, char* argv[], bool &printStats, bool &printPath, in
 
         if (foundH) {
             try {
-                h = std::stoi(argv[i]);
+                h = atoi(argv[i]);
             } catch (const std::invalid_argument ia) {
                 printError("parameter 'heuristic' must be an integer");
 
@@ -109,7 +110,7 @@ bool getParameters(int argc, char* argv[], bool &printStats, bool &printPath, in
             foundH = false;
         } else if (foundD) {
             try {
-                d = std::stoi(argv[i]);
+                d = atoi(argv[i]);
             } catch (const std::invalid_argument ia) {
                 printError("parameter 'depth' must be an integer");
 
