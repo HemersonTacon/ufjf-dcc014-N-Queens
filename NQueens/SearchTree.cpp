@@ -36,7 +36,7 @@ void SearchTree::printStats()
     }
     std::cout << "  expanded nodes: " << expanded << std::endl;
     std::cout << "  visited nodes: " << visited << std::endl;
-    std::cout << "  average branching factor: " << (double) expanded/(visited - limited) << std::endl;
+    std::cout << "  average branching factor: " << (double) expanded/(visited - limited - 1) << std::endl;
 }
 
 std::vector<State*> SearchTree::doSearch(std::string algorithm)
@@ -235,6 +235,7 @@ State* SearchTree::IDAStar()
             if(current->getF() > patamar){
                 closed.push_back(current->getF());
                 current = current->getParent();
+                ++limited;
             }
 
             child = current->makeNextChild();
