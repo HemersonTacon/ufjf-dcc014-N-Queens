@@ -43,6 +43,7 @@
 		<Unit filename="State.cpp" />
 		<Unit filename="State.h" />
 		<Unit filename="main.cpp" />
+		<Unit filename="timer.h" />
 		<Extensions>
 			<code_completion />
 			<debugger />

@@ -1,19 +1,25 @@
 # depslib dependency file v1.0
-1468450077 source:c:\users\principal\documents\github\ufjf-dcc014-n-queens\nqueens\main.cpp
+1470051171 source:c:\users\principal\documents\github\ufjf-dcc014-n-queens\nqueens\main.cpp
 	<iostream>
-	"State.h"
-	<time.h>
+	<stdexcept>
 	"SearchTree.h"
+	"State.h"
 	<stdlib.h>
 
 1469907199 
 
-1468451297 c:\users\principal\documents\github\ufjf-dcc014-n-queens\nqueens\state.h
+1470051171 c:\users\principal\documents\github\ufjf-dcc014-n-queens\nqueens\state.h
+	<iostream>
 
-1468441202 c:\users\principal\documents\github\ufjf-dcc014-n-queens\nqueens\searchtree.h
-	"State.h"
-	<stdlib.h>
+1469907199 c:\users\principal\documents\github\ufjf-dcc014-n-queens\nqueens\searchtree.h
+	<iostream>
+	<chrono>
 	<vector>
+	<stack>
+	<queue>
+	<list>
+	"State.h"
+	"MinHeap.h"
 
 1468445886 source:c:\users\principal\documents\github\ufjf-dcc014-n-queens\nqueens\searchtree.cpp
 	"SearchTree.h"
@@ -95,16 +101,30 @@
 	<stdlib.h>
 	"State.h"
 
-1469836022 source:/home/arthurlorenzi/ufjf-dcc014-N-Queens/NQueens/main.cpp
+1469911448 source:/home/arthurlorenzi/ufjf-dcc014-N-Queens/NQueens/main.cpp
 	<iostream>
 	<stdexcept>
 	"SearchTree.h"
 	"State.h"
+	<iostream>
+	<stdexcept>
+	"SearchTree.h"
+	"State.h"
+	<stdlib.h>
 
 1469553348 /home/arthurlorenzi/ufjf-dcc014-N-Queens/NQueens/State.h
 	<iostream>
+	<iostream>
 
-1469832304 /home/arthurlorenzi/ufjf-dcc014-N-Queens/NQueens/SearchTree.h
+1469892706 /home/arthurlorenzi/ufjf-dcc014-N-Queens/NQueens/SearchTree.h
+	<iostream>
+	<chrono>
+	<vector>
+	<stack>
+	<queue>
+	<list>
+	"State.h"
+	"MinHeap.h"
 	<iostream>
 	<chrono>
 	<vector>
@@ -114,7 +134,9 @@
 	"State.h"
 	"MinHeap.h"
 
-1469833288 source:/home/arthurlorenzi/ufjf-dcc014-N-Queens/NQueens/SearchTree.cpp
+1469935571 source:/home/arthurlorenzi/ufjf-dcc014-N-Queens/NQueens/SearchTree.cpp
+	"SearchTree.h"
+	"Utils.h"
 	"SearchTree.h"
 	"Utils.h"
 
@@ -123,11 +145,17 @@
 1469668885 source:/home/arthurlorenzi/ufjf-dcc014-N-Queens/NQueens/State.cpp
 	<stdlib.h>
 	"State.h"
+	<stdlib.h>
+	"State.h"
 
 1469546844 source:/home/arthurlorenzi/ufjf-dcc014-N-Queens/NQueens/MinHeap.cpp
 	"MinHeap.h"
+	"MinHeap.h"
 
 1469546990 /home/arthurlorenzi/ufjf-dcc014-N-Queens/NQueens/MinHeap.h
+	<math.h>
+	<vector>
+	"State.h"
 	<math.h>
 	<vector>
 	"State.h"
@@ -140,41 +168,11 @@
 1469907199 source:c:\users\principal\documents\github\ufjf-dcc014-n-queens\ufjf-dcc014-n-queens\nqueens\minheap.cpp
 	"MinHeap.h"
 
-1469911448 source:/home/arthurlorenzi/ufjf-dcc014-N-Queens/NQueens/main.cpp
-	<iostream>
-	<stdexcept>
-	"SearchTree.h"
-	"State.h"
-	<stdlib.h>
-
-1469892706 /home/arthurlorenzi/ufjf-dcc014-N-Queens/NQueens/SearchTree.h
-	<iostream>
-	<chrono>
-	<vector>
-	<stack>
-	<queue>
-	<list>
-	"State.h"
-	"MinHeap.h"
-
-1469553348 /home/arthurlorenzi/ufjf-dcc014-N-Queens/NQueens/State.h
-	<iostream>
-
-1469546990 /home/arthurlorenzi/ufjf-dcc014-N-Queens/NQueens/MinHeap.h
+1470051171 c:\users\principal\documents\github\ufjf-dcc014-n-queens\nqueens\minheap.h
 	<math.h>
 	<vector>
 	"State.h"
 
-1469546844 source:/home/arthurlorenzi/ufjf-dcc014-N-Queens/NQueens/MinHeap.cpp
+1470051171 source:c:\users\principal\documents\github\ufjf-dcc014-n-queens\nqueens\minheap.cpp
 	"MinHeap.h"
-
-1469668885 source:/home/arthurlorenzi/ufjf-dcc014-N-Queens/NQueens/State.cpp
-	<stdlib.h>
-	"State.h"
-
-1469935571 source:/home/arthurlorenzi/ufjf-dcc014-N-Queens/NQueens/SearchTree.cpp
-	"SearchTree.h"
-	"Utils.h"
-
-1469675737 /home/arthurlorenzi/ufjf-dcc014-N-Queens/NQueens/Utils.h
 
