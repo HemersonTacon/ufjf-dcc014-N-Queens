@@ -71,8 +71,8 @@ std::vector<State*> SearchTree::doSearch(std::string algorithm)
     clock_gettime(CLOCK_MONOTONIC, &finishWallTime);
     searchWallTime = (finishWallTime.tv_sec - startWallTime.tv_sec) + (finishWallTime.tv_nsec - startWallTime.tv_nsec) / 1000000000.0;
     #else
-    searchWallTime = finishT - startT;
     GET_TIME(finishT);
+    searchWallTime = finishT - startT;
     #endif
     return getPathTo(solution);
 }
