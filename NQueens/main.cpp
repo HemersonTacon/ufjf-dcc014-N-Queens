@@ -39,27 +39,38 @@ void search(bool printPath, bool printStats, int n, int h, int d, std::string al
     if (d != 5 * n)
         tree->setDfsDepthLimit(d);
 
-    std::vector<State*> path = tree->doSearch(algorithm);
-
-    if(path.size() == 0)
-        std::cout << "Search finished: no solution" << std::endl;
-    else if (printPath)
+    try
     {
-        std::cout << "Search finished, path to solution:" << std::endl;
+        std::vector<State*> path = tree->doSearch(algorithm);
 
-        for(auto it = path.begin(); it != path.end(); ++it)
+        if(path.size() == 0)
+            std::cout << "Search finished: no solution" << std::endl;
+        else if (printPath)
+        {
+            std::cout << "Search finished, path to solution:" << std::endl;
+
+            for(auto it = path.begin(); it != path.end(); ++it)
+                (*it)->printBoard();
+        }
+        else
+        {
+            std::cout << "Search finished, found solution:" << std::endl;
+            auto it = path.end();
+            --it;
             (*it)->printBoard();
-    }
-    else
-    {
-        std::cout << "Search finished, found solution:" << std::endl;
-        auto it = path.end();
-        --it;
-        (*it)->printBoard();
-    }
+        }
 
-    if (printStats)
-        tree->printStats();
+        if (printStats)
+            tree->printStats();
+    }
+    catch(std::bad_alloc &ba)
+    {
+        std::cout << "search aborted. bad_alloc: " << ba.what() << std::endl;
+    }
+    catch(...)
+    {
+        std::cout << "an error ocurred while searching" << std::endl;
+    }
 
     delete tree;
 }
